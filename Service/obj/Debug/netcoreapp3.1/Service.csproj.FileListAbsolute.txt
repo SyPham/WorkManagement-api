@@ -1,0 +1,11 @@
+F:\0.Document\wwroot\WorkManagement\Service\bin\Debug\netcoreapp3.1\Service.deps.json
+F:\0.Document\wwroot\WorkManagement\Service\bin\Debug\netcoreapp3.1\Service.dll
+F:\0.Document\wwroot\WorkManagement\Service\bin\Debug\netcoreapp3.1\Service.pdb
+F:\0.Document\wwroot\WorkManagement\Service\bin\Debug\netcoreapp3.1\Data.dll
+F:\0.Document\wwroot\WorkManagement\Service\bin\Debug\netcoreapp3.1\Data.pdb
+F:\0.Document\wwroot\WorkManagement\Service\obj\Debug\netcoreapp3.1\Service.csprojAssemblyReference.cache
+F:\0.Document\wwroot\WorkManagement\Service\obj\Debug\netcoreapp3.1\Service.AssemblyInfoInputs.cache
+F:\0.Document\wwroot\WorkManagement\Service\obj\Debug\netcoreapp3.1\Service.AssemblyInfo.cs
+F:\0.Document\wwroot\WorkManagement\Service\obj\Debug\netcoreapp3.1\Service.csproj.CopyComplete
+F:\0.Document\wwroot\WorkManagement\Service\obj\Debug\netcoreapp3.1\Service.dll
+F:\0.Document\wwroot\WorkManagement\Service\obj\Debug\netcoreapp3.1\Service.pdb
