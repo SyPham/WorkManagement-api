@@ -24,6 +24,7 @@ namespace Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Manager>().HasKey(ba => new { ba.UserID, ba.ProjectID });
+
             builder.Entity<TeamMember>().HasKey(ba => new { ba.UserID, ba.ProjectID });
             builder.Entity<Tag>().HasKey(ba => new { ba.TaskID, ba.UserID });
             builder.Entity<OCUser>().HasKey(ba => new { ba.UserID, ba.OCID });

@@ -99,7 +99,7 @@ namespace WorkManagement
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
-                    builder => builder.WithOrigins("http://10.4.4.224:90", "http://10.4.4.224:98", "http://10.4.4.224:91", "http://10.4.4.92:90") //register for client
+                    builder => builder.WithOrigins("http://10.4.4.224:93", "http://10.4.4.224:94", "http://10.4.4.92:92") //register for client
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials());
@@ -109,7 +109,9 @@ namespace WorkManagement
             services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<ITaskService, TaskService>();
+            services.AddScoped<IOCUserService, OCUserService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IOCService, OCService>();
 
 
         }

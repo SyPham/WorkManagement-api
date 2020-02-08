@@ -43,7 +43,7 @@ namespace Service.Implement
                 return false;
             }
 
-             _context.Roles.Remove(entity);
+            _context.Roles.Remove(entity);
             try
             {
                 await _context.SaveChangesAsync();
@@ -61,13 +61,10 @@ namespace Service.Implement
             return await _context.Roles.ToListAsync();
         }
 
-        public async Task<PagedList<Role>> GetAllPaging(string keyword, int page, int pageSize)
+        public async Task<PagedList<Role>> GetAllPaging( int page, int pageSize)
         {
             var source = _context.Roles.AsQueryable();
-            if (!keyword.IsNullOrEmpty())
-            {
-                source = source.Where(x => x.Name.Contains(keyword));
-            }
+           
             return await PagedList<Role>.CreateAsync(source, page, pageSize);
         }
 
@@ -78,7 +75,7 @@ namespace Service.Implement
 
         public async Task<bool> Update(Role entity)
         {
-           var item= await _context.Roles.FindAsync(entity.ID);
+            var item = await _context.Roles.FindAsync(entity.ID);
             item.Name = entity.Name;
             try
             {

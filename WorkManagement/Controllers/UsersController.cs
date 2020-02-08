@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Data.Models;
+using Data.ViewModel.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ using Service.Interface;
 namespace WorkManagement.Controllers
 {
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
     [Authorize]
     public class UsersController : ControllerBase
     {
@@ -23,10 +24,17 @@ namespace WorkManagement.Controllers
             _userService = userService;
         }
 
-        [HttpGet("getall")]
+        [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _userService.GetAll());
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetListUser()
+        {
+            return Ok(await _userService.GetListUser());
         }
         [HttpGet("/GetUser/{id}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int id)
@@ -34,7 +42,7 @@ namespace WorkManagement.Controllers
             return Ok(await _userService.GetByID(id));
         }
         [HttpPost]
-        public async Task<IActionResult> Create(User user)
+        public async Task<IActionResult> Create(UserViewModel user)
         {
             return Ok(await _userService.Create(user));
         }

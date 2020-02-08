@@ -14,6 +14,6 @@ namespace Service.Interface
         Task<bool> Delete(int id);
         Task<Role> GetByID(int id);
         Task<List<Role>> GetAll();
-        Task<PagedList<Role>> GetAllPaging(string keyword, int page, int pageSize);
+        Task<PagedList<Role>> GetAllPaging(int page, int pageSize);
     }
 }

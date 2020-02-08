@@ -30,7 +30,16 @@ namespace WorkManagement.Controllers
         {
             return Ok(await _projectService.GetAllPaging(keyword, page, pageSize));
         }
-
+        [HttpGet]
+        public async Task<ActionResult> GetAll()
+        {
+            return Ok(await _projectService.GetAll());
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetListProject()
+        {
+            return Ok(await _projectService.GetListProject());
+        }
         // GET: api/Projects/5
         [HttpGet("{id}")]
         public async Task<ActionResult> GetByID(int id)

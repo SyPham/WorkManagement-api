@@ -56,14 +56,26 @@ namespace WorkManagement.Controllers
         {
             return Ok(await _taskService.GetListTree());
         }
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetListTreeHistory()
+        {
+            return Ok(await _taskService.GetListTreeHistory());
+        }
         [HttpPost]
         public async Task<IActionResult> CreateTask([FromBody]CreateTaskViewModel createTask)
         {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            createTask.CreatedBy = userID;
             return Ok(await _taskService.CreateTask(createTask));
         }
         [HttpPost]
         public async Task<IActionResult> CreateSubTask([FromBody]CreateTaskViewModel createTask)
         {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            createTask.CreatedBy = userID;
             return Ok(await _taskService.CreateSubTask(createTask));
         }
         [HttpPost]
@@ -72,10 +84,39 @@ namespace WorkManagement.Controllers
             return Ok(await _taskService.UpdateTask(createTask));
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProject(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             return Ok(await _taskService.Delete(id));
         }
-       
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Done(int id)
+        {
+            return Ok(await _taskService.Done(id));
+        }
+        [HttpPost]
+        public async Task<IActionResult> Remark([FromBody] RemarkViewModel remark)
+        {
+            return Ok(await _taskService.Remark(remark));
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<ActionResult> GetListProject()
+        {
+            return Ok(await _taskService.GetListProject());
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetListUser()
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _taskService.GetListUser(userID));
+        }
+        [HttpGet]
+        public async Task<IActionResult> From()
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _taskService.From(userID));
+        }
     }
 }

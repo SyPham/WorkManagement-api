@@ -1,5 +1,7 @@
-﻿using Data;
+﻿using AutoMapper;
+using Data;
 using Data.Models;
+using Data.ViewModel.Project;
 using Microsoft.EntityFrameworkCore;
 using Service.Helpers;
 using Service.Interface;
@@ -14,9 +16,12 @@ namespace Service.Implement
     public class ProjectService : IProjectService
     {
         private readonly DataContext _context;
-        public ProjectService(DataContext context)
+        private readonly IMapper _mapper;
+
+        public ProjectService(DataContext context , IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<bool> Create(Project entity)
@@ -59,6 +64,10 @@ namespace Service.Implement
         public async Task<List<Project>> GetAll()
         {
             return await _context.Projects.ToListAsync();
+        }
+        public async Task<List<ProjectViewModel>> GetListProject()
+        {
+            return _mapper.Map<List<ProjectViewModel>>(await _context.Projects.ToListAsync());
         }
 
         public async Task<PagedList<Project>> GetAllPaging(string keyword, int page, int pageSize)

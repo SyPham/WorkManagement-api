@@ -6,10 +6,11 @@ using System.Text;
 
 namespace Data.Models
 {
-   public class Task : IEntity
+    public class Task : IEntity
     {
         public Task()
         {
+         
             CreatedDate = DateTime.Now;
         }
 
@@ -26,10 +27,12 @@ namespace Data.Models
         public int Level { get; set; }
         public bool Seen { get; set; }
         public int ProjectID { get; set; }
-        public virtual Project Project { get; set; }
+
         [ForeignKey("User")]
         public int CreatedBy { get; set; }
         public virtual User User { get; set; }
+        public int OCID { get; set; }
+
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using Data;
+﻿using AutoMapper;
+using Data;
 using Data.Models;
 using Data.ViewModel.OC;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +15,12 @@ namespace Service.Implement
     public class OCService : IOCService
     {
         private readonly DataContext _context;
+        private readonly IMapper _mapper;
 
-        public OCService(DataContext context)
+        public OCService(DataContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public Task<bool> AddOrUpdate(OC entity)
@@ -113,7 +116,7 @@ namespace Service.Implement
             }
             return string.Join("->", list2.OrderBy(x => x.ParentID).Select(x => x.Name).ToArray());
         }
-       
+
         public async Task<bool> IsExistsCode(int ID)
         {
             return await _context.OCs.AnyAsync(x => x.ID == ID);
@@ -123,6 +126,120 @@ namespace Service.Implement
         {
             var item = await _context.OCs.FindAsync(level.key);
             item.Name = level.title;
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+
+        public async Task<IEnumerable<TreeViewOC>> GetListTreeOC(int parentID, int id)
+        {
+            var listLevels = await _context.OCs.OrderBy(x => x.Level).ToListAsync();
+            var levels = new List<TreeViewOC>();
+            foreach (var item in listLevels)
+            {
+                var levelItem = new TreeViewOC();
+                levelItem.ID = item.ID;
+                levelItem.Name = item.Name;
+                levelItem.Level = item.Level;
+                levelItem.ParentID = item.ParentID;
+                levels.Add(levelItem);
+            }
+
+            List<TreeViewOC> hierarchy = new List<TreeViewOC>();
+
+            hierarchy = levels.Where(c => c.ID == id && c.ParentID == parentID)
+                            .Select(c => new TreeViewOC()
+                            {
+                                ID = c.ID,
+                                Name = c.Name,
+                                Level = c.Level,
+                                ParentID = c.ParentID,
+                                children = GetTreeChildren(levels, c.ID)
+                            })
+                            .ToList();
+
+
+            HieararchyWalkTree(hierarchy);
+
+            return hierarchy;
+        }
+        private void HieararchyWalkTree(List<TreeViewOC> hierarchy)
+        {
+            if (hierarchy != null)
+            {
+                foreach (var item in hierarchy)
+                {
+                    //Console.WriteLine(string.Format("{0} {1}", item.Id, item.Text));
+                    HieararchyWalkTree(item.children);
+                }
+            }
+        }
+        public List<TreeViewOC> GetTreeChildren(List<TreeViewOC> levels, int parentid)
+        {
+            return levels
+                    .Where(c => c.ParentID == parentid)
+                    .Select(c => new TreeViewOC()
+                    {
+                        ID = c.ID,
+                        Name = c.Name,
+                        Level = c.Level,
+                        ParentID = c.ParentID,
+                        children = GetTreeChildren(levels, c.ID)
+                    })
+                    .ToList();
+        }
+
+        public async Task<object> CreateOC(CreateOCViewModel oc)
+        {
+            try
+            {
+                var item = _mapper.Map<Data.Models.OC>(oc);
+                item.Level = 1;
+
+                await _context.OCs.AddAsync(item);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        
+        public async Task<object> CreateSubOC(CreateOCViewModel oc)
+        {
+            var item = _mapper.Map<Data.Models.OC>(oc);
+
+            //Level cha tang len 1 va gan parentid cho subtask
+            var taskParent = _context.OCs.Find(item.ParentID);
+            item.Level = taskParent.Level + 1;
+            item.ParentID = oc.ParentID;
+            await _context.OCs.AddAsync(item);
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> Delete(int ID)
+        {
+            var item = await _context.OCs.FindAsync(ID);
+            //var OCS = await _ocService.GetListTreeOC(item.ParentID, item.ID);
+            //var arrOCs = GetAllDescendants(OCS).Select(x => x.ID).ToArray();
+            //var items = await _context.Tasks.Where(x => arrOCs.Contains(x.ID)).ToListAsync();
+            _context.OCs.Remove(item);
             try
             {
                 await _context.SaveChangesAsync();

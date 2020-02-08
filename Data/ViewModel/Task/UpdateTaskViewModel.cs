@@ -16,6 +16,6 @@ namespace Data.ViewModel.Task
         public int ParentID { get; set; }
 
         public bool Status { get; set; }
-        
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using Data.ViewModel.Project;
 using Service.Helpers;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,6 @@ namespace Service.Interface
         Task<Project> GetByID(int id);
         Task<List<Project>> GetAll();
         Task<PagedList<Project>> GetAllPaging(string keyword,int page, int pageSize);
+        Task<List<ProjectViewModel>> GetListProject();
     }
 }

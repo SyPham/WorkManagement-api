@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,13 +18,20 @@ namespace Data.ViewModel.Task
         public string Description { get; set; }
         public int Level { get; set; }
         public int ParentID { get; set; }
-        public DateTime DueDate { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public string DueDate { get; set; }
+        public string CreatedDate { get; set; }
         public string Remark { get; set; }
+        public string PIC { get; set; }
         public string From { get; set; }
+        public string ProjectName { get; set; }
+
+        public int CreatedBy { get; set; }
+        public Data.Models.User User { get; set; }
         public int ProjectID { get; set; }
 
-        public bool state { get; set; }
+        public Data.Models.Project Project { get; set; }
+
+        public string state { get; set; }
 
         public bool HasChildren
         {

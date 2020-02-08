@@ -1,4 +1,5 @@
-﻿using Data.ViewModel.Task;
+﻿using Data.ViewModel.Project;
+using Data.ViewModel.Task;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +16,12 @@ namespace Service.Interface
         Task<object> CreateSubTask(CreateTaskViewModel task);
         Task<object> CreateRemark(int taskID,string remark);
         Task<object> Delete(int id);
+        Task<object> From(int userid);
+        Task<object> Done(int id);
+        Task<List<TreeViewTask>> GetListTreeHistory();
+        Task<object> GetListUser(int userid);
+        Task<List<ProjectViewModel>> GetListProject();
         Task<object> UpdateTask(UpdateTaskViewModel task);
+        Task<object> Remark(RemarkViewModel remark);
     }
 }

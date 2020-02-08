@@ -45,7 +45,20 @@ namespace WorkManagement.Controllers
         {
             return Ok(await _ocService.Rename(oC));
         }
-
-      
+        [HttpPost]
+        public async Task<IActionResult> CreateOC([FromBody]CreateOCViewModel oC)
+        {
+            return Ok(await _ocService.CreateOC(oC));
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateSubOC([FromBody]CreateOCViewModel oC)
+        {
+            return Ok(await _ocService.CreateSubOC(oC));
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            return Ok(await _ocService.Delete(id));
+        }
     }
 }

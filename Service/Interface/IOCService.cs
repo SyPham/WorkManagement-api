@@ -12,8 +12,13 @@ namespace Service.Interface
         Task<List<TreeView>> GetListTree();
         Task<bool> AddOrUpdate(OC entity);
         Task<bool> IsExistsCode(int ID);
+        Task<bool> Delete(int ID);
         Task<bool> Rename(TreeViewRename level);
         string GetNode(string code);
         string GetNode(int id);
+        Task<IEnumerable<TreeViewOC>> GetListTreeOC(int parentID, int id);
+
+        Task<object> CreateOC(CreateOCViewModel task);
+        Task<object> CreateSubOC(CreateOCViewModel task);
     }
 }

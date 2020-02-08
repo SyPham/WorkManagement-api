@@ -55,7 +55,15 @@ namespace Data.Migrations
                     b.Property<int>("ParentID")
                         .HasColumnType("int");
 
+                    b.Property<int>("TaskID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TaskID1")
+                        .HasColumnType("int");
+
                     b.HasKey("ID");
+
+                    b.HasIndex("TaskID1");
 
                     b.ToTable("OCs");
                 });
@@ -148,6 +156,9 @@ namespace Data.Migrations
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
+                    b.Property<int>("OCID")
+                        .HasColumnType("int");
+
                     b.Property<int>("ParentID")
                         .HasColumnType("int");
 
@@ -166,8 +177,6 @@ namespace Data.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("CreatedBy");
-
-                    b.HasIndex("ProjectID");
 
                     b.ToTable("Tasks");
                 });
@@ -243,6 +252,13 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Data.Models.OC", b =>
+                {
+                    b.HasOne("Data.Models.Task", "Task")
+                        .WithMany()
+                        .HasForeignKey("TaskID1");
+                });
+
             modelBuilder.Entity("Data.Models.OCUser", b =>
                 {
                     b.HasOne("Data.Models.OC", "OC")
@@ -278,12 +294,6 @@ namespace Data.Migrations
                     b.HasOne("Data.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Data.Models.Project", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
