@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Data.Models;
 using Data.ViewModel.User;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Service.Helpers;
 using Service.Interface;
+using WorkManagement.Dto;
+using WorkManagement.Helpers;
 
 namespace WorkManagement.Controllers
 {
@@ -18,10 +23,11 @@ namespace WorkManagement.Controllers
     {
         private readonly IUserService _userService;
 
-
-        public UsersController(IUserService userService)
+        private IHostingEnvironment _currentEnvironment;
+        public UsersController(IUserService userService, IHostingEnvironment currentEnvironment)
         {
             _userService = userService;
+            _currentEnvironment = currentEnvironment;
         }
 
         [HttpGet]
@@ -44,22 +50,76 @@ namespace WorkManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(UserViewModel user)
         {
+            //string uniqueFileName = null;
+            //if (user.Photo != null)
+            //{
+            //    string uploadFolder = Path.Combine(_currentEnvironment.WebRootPath,"images");
+            //    uniqueFileName = Guid.NewGuid().ToString() + '_' + user.Photo.FileName;
+            //   var filePath = Path.Combine(uploadFolder,uniqueFileName);
+            //    user.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
+            //    user.ImageUrl = "/images/"+ uniqueFileName;
+            //}
             return Ok(await _userService.Create(user));
+        }
+      
+        [HttpPost]
+        public async Task<IActionResult> ChangeAvatar([FromForm]IFormFile formFile)
+        {
+            IFormFile file = Request.Form.Files["UploadedFile"];
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            string uniqueFileName = null;
+            if (file != null)
+            {
+                string uploadFolder = Path.Combine(_currentEnvironment.WebRootPath, "images");
+                uniqueFileName = Guid.NewGuid().ToString() + '_' + file.FileName;
+                var filePath = Path.Combine(uploadFolder, uniqueFileName);
+                file.CopyTo(new FileStream(filePath, FileMode.Create));
+            }
+            return Ok(await _userService.ChangeAvatar(userID, uniqueFileName));
         }
         [HttpPost]
         public async Task<IActionResult> Update(User user )
         {
             return Ok(await _userService.Update(user));
         }
+       
+        [HttpPost]
+        public async Task<IActionResult> UploapProfile(IFormFile formFile)
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            byte[] image = null;
+            IFormFile file = Request.Form.Files["UploadedFile"];
+            if ((file != null) && (file.Length > 0) && !string.IsNullOrEmpty(file.FileName))
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await file.CopyToAsync(stream);
+                    image = stream.ToArray();
+                };
+            }
+            return Ok(await _userService.UploapProfile(userID,image));
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             return Ok(await _userService.Delete(id));
         }
-        [HttpGet("{keyword}/{page}/{pageSize}")]
-        public async Task<ActionResult> GetAllPaging(string keyword, int page, int pageSize)
+        [HttpGet("{page}/{pageSize}/{keyword}")]
+        [HttpGet("{page}/{pageSize}")]
+
+        public async Task<ActionResult> GetAllPaging(int page, int pageSize, string keyword = "")
         {
-            return Ok(await _userService.GetAllPaging(keyword, page, pageSize));
+            var model = await _userService.GetAllPaging(page, pageSize, keyword);
+            return Ok(new
+            {
+                data = model,
+                total = model.TotalPages,
+                page,
+                pageSize
+            });
         }
     }
 }

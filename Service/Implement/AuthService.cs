@@ -90,6 +90,17 @@ namespace Service.Implement
         {
             return await _context.Users.FirstOrDefaultAsync(x => x.ID == Id);
         }
-        
+        private bool disposed = false;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
     }
 }

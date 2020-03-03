@@ -12,6 +12,7 @@ namespace Data.Models
         public int UserID { get; set; }
         [Key, Column(Order = 1)]
         public int OCID { get; set; }
+        public bool Status { get; set; }
         public virtual OC OC { get; set; }
         public virtual User User { get; set; }
     }

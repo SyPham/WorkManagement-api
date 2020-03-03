@@ -1,0 +1,77 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Service.Helpers;
+using Service.Interface;
+using WorkManagement.Helpers;
+using static System.Net.Mime.MediaTypeNames;
+
+namespace WorkManagement.Controllers
+{
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    [Authorize]
+    public class HomeController : ControllerBase
+    {
+        private readonly INotificationService _notificationService;
+
+        public HomeController(INotificationService notificationService)
+        {
+
+            _notificationService = notificationService;
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Seen(int id)
+        {
+           
+            return Ok(await _notificationService.Seen(id));
+        }
+        [HttpGet("{page}/{pageSize}")]
+        public async Task<IActionResult> GetAllNotificationCurrentUser(int page, int pageSize)
+       {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _notificationService.GetAllByUserID(userID,page,pageSize));
+        }
+        [HttpGet("{page}/{pageSize}")]
+        public async Task<IActionResult> GetNotificationByUser(int page, int pageSize)
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _notificationService.GetNotificationByUser(userID, page, pageSize));
+        }
+        [AllowAnonymous]
+        [HttpPost]
+        public void Base64ToImage(string source)
+        {
+            string base64 = source.Substring(source.IndexOf(',') + 1);
+            base64 = base64.Trim('\0');
+            byte[] chartData = Convert.FromBase64String(base64);
+            
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Image(IFormFile formFile)
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            byte[] image = null;
+            IFormFile file = Request.Form.Files["UploadedFile"];
+            if ((file != null) && (file.Length > 0) && !string.IsNullOrEmpty(file.FileName))
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await file.CopyToAsync(stream);
+                    image = stream.ToArray();
+                };
+            }
+          
+            return Ok();
+        }
+    }
+}

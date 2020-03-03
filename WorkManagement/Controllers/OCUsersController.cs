@@ -29,10 +29,10 @@ namespace WorkManagement.Controllers
             return Ok(await _ocUserService.GetListUser(ocid));
         }
 
-        [HttpGet("{userid}/{ocid}")]
-        public async Task<ActionResult> AddOrUpdate(int userid, int ocid)
+        [HttpGet("{userid}/{ocid}/{status}")]
+        public async Task<ActionResult> AddOrUpdate(int userid, int ocid,bool status)
         {
-            return Ok( await _ocUserService.AddOrUpdate(userid,ocid));
+            return Ok( await _ocUserService.AddOrUpdate(userid,ocid, status));
         }
     }
 }

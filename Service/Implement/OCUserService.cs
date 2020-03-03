@@ -16,43 +16,104 @@ namespace Service.Implement
         private readonly IUserService _userService;
         private readonly IOCService _oCService;
 
-        public OCUserService(DataContext context,IUserService userService,IOCService oCService)
+        public OCUserService(DataContext context, IUserService userService, IOCService oCService)
         {
             _context = context;
             _userService = userService;
             _oCService = oCService;
         }
 
-        public async Task<object> AddOrUpdate(int userid, int ocid)
+        public async Task<object> AddOrUpdate(int userid, int ocid, bool status)
         {
 
             try
             {
-                var item = await _context.OCUsers.FirstOrDefaultAsync(x => x.OCID == ocid && x.UserID == userid);
+                var item = await _context.OCUsers.Include(x => x.OC).FirstOrDefaultAsync(x => x.OCID == ocid && x.UserID == userid);
                 var user = await _context.Users.FindAsync(userid);
-
-                if (item == null)
+                //Neu user do chuyen  status ve false thi xoa luon
+                if (status && item != null)
                 {
-                    var oc = new OCUser();
-                    oc.OCID = ocid;
-                    oc.UserID = userid;
-                    user.OCID = ocid;
-                    _context.OCUsers.Add(oc);
-                    await _context.SaveChangesAsync();
+                    user.LevelOC = 0;
+                    user.OCID = 0;
+                    _context.OCUsers.Remove(item);
 
                 }
                 else
                 {
-                    user.OCID = 0;
-                    _context.OCUsers.Remove(item);
-                    await _context.SaveChangesAsync();
-                }
+                    //Kiem tra xem user do co thuoc phong nao khac khong
+                    var item2 = await _context.OCUsers.FirstOrDefaultAsync(x => x.UserID == userid);
+                    if (item2 != null && item2.Status)
+                        return new
+                        {
+                            status = false,
+                            message = "The user has already existed in other department!"
+                        };
+                    else
+                    {
+                        var ocModel = await _context.OCs.FindAsync(ocid);
+                        user.LevelOC = ocModel.Level;
+                        user.OCID = ocid;
 
-                return true;
+                        var oc = new OCUser();
+                        oc.OCID = ocid;
+                        oc.UserID = userid;
+                        oc.Status = true;
+                        _context.OCUsers.Add(oc);
+
+                    }
+
+                }
+                        await _context.SaveChangesAsync();
+                ////Neu chua co thi them moi
+                //if (item == null)
+                //{
+
+                //    //Kiem tra xem lai xem trong OCUSer da gan user nay cho department nao chua
+                //    var item2 = await _context.OCUsers.FirstOrDefaultAsync(x => x.UserID == userid);
+                //    if (item2 != null && item2.Status)
+                //        return new
+                //        {
+                //            status = false,
+                //            message = "The user has already existed in other department!"
+                //        };
+                //    user.LevelOC = item.OC.Level;
+                //    var oc = new OCUser();
+                //    oc.OCID = ocid;
+                //    oc.UserID = userid;
+                //    oc.Status = true;
+                //    user.OCID = ocid;
+                //    _context.OCUsers.Add(oc);
+                //    await _context.SaveChangesAsync();
+                //}//co roi thi update
+                //else
+                //{
+                //    item.Status = !item.Status;
+                //    if (item.Status == true)
+                //    {
+                //        user.OCID = ocid;
+                //        user.LevelOC = item.OC.Level;
+                //    }
+                //    else
+                //    {
+                //        user.OCID = 0;
+                //        user.LevelOC = 0;
+                //    }
+                //    await _context.SaveChangesAsync();
+                //}
+
+                return new
+                {
+                    status = true,
+                    message = "Successfully!"
+                };
             }
             catch (Exception)
             {
-                return false;
+                return new
+                {
+                    status = false,
+                    message = "Error!"
+                };
             }
         }
 
@@ -62,11 +123,23 @@ namespace Service.Implement
             {
                 x.ID,
                 x.Username,
-                RoleName=x.Role.Name,
+                RoleName = x.Role.Name,
                 x.RoleID,
-                Status = _context.OCUsers.Any(a=>a.UserID == x.ID && a.OCID == ocid)
+                Status = _context.OCUsers.Any(a => a.UserID == x.ID && a.OCID == ocid && a.Status == true)
             }).ToListAsync();
             return users;
+        }
+        private bool disposed = false;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+            }
+            this.disposed = true;
         }
     }
 }

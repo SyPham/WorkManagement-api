@@ -1,6 +1,8 @@
 using AutoMapper;
 using Data.Models;
 using Data.ViewModel;
+using Data.ViewModel.Comment;
+using Data.ViewModel.Notification;
 using Data.ViewModel.OC;
 using Data.ViewModel.Project;
 using Data.ViewModel.Task;
@@ -8,6 +10,7 @@ using Data.ViewModel.User;
 using Service.Helpers;
 using System;
 using System.Globalization;
+using System.Linq;
 using WorkManagement.Dtos;
 
 namespace WorkManagement.Helpers
@@ -21,14 +24,16 @@ namespace WorkManagement.Helpers
                 .ForMember(x => x.Role, option => option.Ignore())
                 .ForMember(x => x.Email, option => option.Ignore())
                 .ForMember(x => x.OCID, option => option.Ignore());
-            CreateMap<Task, CreateTaskViewModel>().ForMember(x => x.PIC, option => option.Ignore());
+            CreateMap<Task, CreateTaskViewModel>().ForMember(x => x.PIC, option => option.Ignore())
+                .ForMember(d => d.CreatedBy, s => s.MapFrom(p => p.FromWhoID));
             CreateMap<CreateTaskViewModel, Task>()
                  .ForMember(dest => dest.DueDate,
-                opt => opt.MapFrom(src => DateTime.ParseExact(src.Deadline, "dd/MM/yyyy", CultureInfo.InvariantCulture)));
+                opt => opt.MapFrom(src => src.Deadline.ToParseIso8601()));
 
             CreateMap<Task, TreeViewTask>();
-                
+
             CreateMap<TreeViewTask, Task>();
+
 
             CreateMap<User, UserViewModel>();
 
@@ -38,7 +43,14 @@ namespace WorkManagement.Helpers
 
             CreateMap<CreateOCViewModel, OC>();
 
-            CreateMap<Project, ProjectViewModel>();
+            CreateMap<Comment, CommentViewModel>();
+
+            CreateMap<CommentViewModel, Comment>();
+
+            CreateMap<Project, ProjectViewModel>()
+                .ForMember(d => d.Members, s => s.MapFrom(p => p.TeamMembers.Select(_=> _.UserID).ToList()))
+                .ForMember(d => d.Manager, s => s.MapFrom(p => p.Managers.Select(_ => _.UserID).ToList()));
+
             CreateMap<ProjectViewModel, Project>()
                 .ForMember(x => x.Managers, option => option.Ignore())
                 .ForMember(x => x.TeamMembers, option => option.Ignore());
@@ -48,8 +60,6 @@ namespace WorkManagement.Helpers
             CreateMap<TreeModel, TreeViewOC>()
                 .ForMember(x => x.Level, option => option.Ignore())
                 .ForMember(x => x.Name, option => option.Ignore());
-
-
 
             //CreateMap<UserAccount, UserModel>();
             //CreateMap<RegisterModel, UserAccount>();

@@ -61,6 +61,39 @@ namespace Service.Implement
 
             return hierarchy;
         }
+        private async Task<List<TreeView>> GetListTree(int parentID, int id)
+        {
+            var listLevels = await _context.OCs.OrderBy(x => x.Level).ToListAsync();
+            var levels = new List<TreeView>();
+            foreach (var item in listLevels)
+            {
+                var levelItem = new TreeView();
+                levelItem.key = item.ID;
+                levelItem.title = item.Name;
+                levelItem.levelnumber = item.Level;
+                levelItem.parentid = item.ParentID;
+                levels.Add(levelItem);
+            }
+
+            List<TreeView> hierarchy = new List<TreeView>();
+
+            hierarchy = levels.Where(c => c.key == id && c.parentid == parentID)
+                            .Select(c => new TreeView()
+                            {
+                                key = c.key,
+                                title = c.title,
+                                code = c.code,
+                                levelnumber = c.levelnumber,
+                                parentid = c.parentid,
+                                children = GetChildren(levels, c.key)
+                            })
+                            .ToList();
+
+
+            HieararchyWalk(hierarchy);
+
+            return hierarchy;
+        }
         private void HieararchyWalk(List<TreeView> hierarchy)
         {
             if (hierarchy != null)
@@ -140,7 +173,7 @@ namespace Service.Implement
 
         public async Task<IEnumerable<TreeViewOC>> GetListTreeOC(int parentID, int id)
         {
-            var listLevels = await _context.OCs.OrderBy(x => x.Level).ToListAsync();
+            var listLevels = await _context.OCs.ToListAsync();
             var levels = new List<TreeViewOC>();
             foreach (var item in listLevels)
             {
@@ -200,10 +233,19 @@ namespace Service.Implement
         {
             try
             {
-                var item = _mapper.Map<Data.Models.OC>(oc);
-                item.Level = 1;
+                if(oc.ID == 0)
+                {
+                    var item = _mapper.Map<Data.Models.OC>(oc);
+                    item.Level = 1;
 
-                await _context.OCs.AddAsync(item);
+                    await _context.OCs.AddAsync(item);
+                }
+                else
+                {
+                   var item= await _context.OCs.FindAsync(oc.ID);
+                    item.Name = oc.Name;
+                }
+             
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -212,16 +254,34 @@ namespace Service.Implement
                 return false;
             }
         }
-        
+        public async Task<object> ListOCIDofUser(int ocid)
+        {
+            try
+            {
+                var item = await _context.OCs.FindAsync(ocid);
+                var ocs = await GetListTree(item.ParentID, item.ID);
+
+                var arrocs = GetAllDescendants(ocs).Select(x => x.key).ToArray();
+                return arrocs;
+            }
+            catch (Exception)
+            {
+
+                return new int[] { };
+            }
+          
+        }
         public async Task<object> CreateSubOC(CreateOCViewModel oc)
         {
-            var item = _mapper.Map<Data.Models.OC>(oc);
+           
+                var item = _mapper.Map<Data.Models.OC>(oc);
 
-            //Level cha tang len 1 va gan parentid cho subtask
-            var taskParent = _context.OCs.Find(item.ParentID);
-            item.Level = taskParent.Level + 1;
-            item.ParentID = oc.ParentID;
-            await _context.OCs.AddAsync(item);
+                //Level cha tang len 1 va gan parentid cho subtask
+                var taskParent = _context.OCs.Find(item.ParentID);
+                item.Level = taskParent.Level + 1;
+                item.ParentID = oc.ParentID;
+                await _context.OCs.AddAsync(item);
+            
             try
             {
                 await _context.SaveChangesAsync();
@@ -232,7 +292,11 @@ namespace Service.Implement
                 return false;
             }
         }
-
+        private IEnumerable<TreeView> GetAllDescendants(IEnumerable<TreeView> rootNodes)
+        {
+            var descendants = rootNodes.SelectMany(x => GetAllDescendants(x.children));
+            return rootNodes.Concat(descendants);
+        }
         public async Task<bool> Delete(int ID)
         {
             var item = await _context.OCs.FindAsync(ID);
@@ -249,6 +313,18 @@ namespace Service.Implement
             {
                 return false;
             }
+        }
+        private bool disposed = false;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+            }
+            this.disposed = true;
         }
     }
 }

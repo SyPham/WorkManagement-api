@@ -35,5 +35,10 @@
     <ProjectReference Include="..\Service\Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Hubs\Interface\" />
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 
 </Project>

@@ -32,7 +32,9 @@ namespace WorkManagement.Controllers
             return Ok( new  
             {
                 data = model,
-                total = model.TotalPages
+                total = model.TotalPages,
+                page,
+                pageSize
             }); 
         }
         [HttpGet]

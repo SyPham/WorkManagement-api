@@ -6,9 +6,11 @@ using Data.ViewModel.Task;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Service.Helpers;
 using Service.Interface;
 using WorkManagement.Helpers;
+using WorkManagement.Hub;
 
 namespace WorkManagement.Controllers
 {
@@ -18,10 +20,11 @@ namespace WorkManagement.Controllers
     public class TasksController : ControllerBase
     {
         private readonly ITaskService _taskService;
-
-        public TasksController(ITaskService taskService)
+        private readonly IHubContext<WorkingManagementHub> _hubContext;
+        public TasksController(ITaskService taskService, IHubContext<WorkingManagementHub> hubContext)
         {
             _taskService = taskService;
+            _hubContext = hubContext;
         }
         [AllowAnonymous]
         [HttpGet("{name}/{page}/{pageSize}")]
@@ -50,17 +53,52 @@ namespace WorkManagement.Controllers
         {
             return Ok(await _taskService.CreateRemark(taskId, remark));
         }
-        [AllowAnonymous]
+        [HttpGet("{sort}")]
+        [HttpGet("{priority}/{sort}")]
+        [HttpGet("{priority}/{sort}/{start}/{end}")]
+        [HttpGet("{priority}/{sort}/{start}/{end}/{weekdays}")]
+        [HttpGet("{priority}/{sort}/{start}/{end}/{weekdays}/{monthly}")]
+        [HttpGet("{priority}/{sort}/{start}/{end}/{weekdays}/{monthly}/{quarterly}")]
         [HttpGet]
-        public async Task<IActionResult> GetListTreeTask()
+        public async Task<IActionResult> GetListTreeTask(string sort = "", string priority = "", string start = "", string end = "", string weekdays = "", string monthly = "", string quarterly = "")
         {
-            return Ok(await _taskService.GetListTree());
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _taskService.GetListTree(sort, priority, userID, start, end, weekdays, monthly, quarterly));
         }
-        [AllowAnonymous]
+
+        [HttpGet]
+        [HttpGet("{ocid}")]
+        [HttpGet("{ocid}/{priority}")]
+        [HttpGet("{ocid}/{priority}/{start}")]
+        [HttpGet("{ocid}/{priority}/{start}/{end}")]
+        [HttpGet("{ocid}/{priority}/{start}/{end}/{weekdays}")]
+        public async Task<IActionResult> GetListTreeAbnormal(int ocid = 0, string priority = "", string start = "", string end = "", string weekdays = "")
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _taskService.GetListTreeAbnormal(ocid, priority, userID, start, end, weekdays));
+        }
+
+        [HttpGet("{ocid}/{sort}")]
+        [HttpGet("{ocid}/{priority}/{sort}")]
+        [HttpGet("{ocid}")]
+        public async Task<IActionResult> GetListTreeRoutine(int ocid, string sort = "", string priority = "")
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _taskService.GetListTreeRoutine(sort, priority, userID, ocid));
+        }
+
+
+
+       
         [HttpGet]
         public async Task<IActionResult> GetListTreeHistory()
         {
-            return Ok(await _taskService.GetListTreeHistory());
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _taskService.GetListTreeHistory(userID));
         }
         [HttpPost]
         public async Task<IActionResult> CreateTask([FromBody]CreateTaskViewModel createTask)
@@ -68,35 +106,57 @@ namespace WorkManagement.Controllers
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
             createTask.CreatedBy = userID;
-            return Ok(await _taskService.CreateTask(createTask));
+            createTask.UserID = userID;
+            var model = await _taskService.CreateTask(createTask);
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item2, "message");
+            return Ok(model.Item1);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateSubTask([FromBody]CreateTaskViewModel createTask)
+        public async Task<IActionResult> CreateSubTask([FromBody]CreateTaskViewModel createSubTask)
         {
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
-            createTask.CreatedBy = userID;
-            return Ok(await _taskService.CreateSubTask(createTask));
+            createSubTask.CreatedBy = userID;
+            createSubTask.CurrentUser = userID;
+            return Ok(await _taskService.CreateSubTask(createSubTask));
         }
         [HttpPost]
         public async Task<IActionResult> UpdateTask([FromBody]UpdateTaskViewModel createTask)
         {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            createTask.CurrentUser = userID;
             return Ok(await _taskService.UpdateTask(createTask));
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return Ok(await _taskService.Delete(id));
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _taskService.Delete(id, userID));
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> Done(int id)
         {
-            return Ok(await _taskService.Done(id));
+            string token = Request.Headers["Authorization"];
+            string url = $"{Request.Headers["Origin"]}/#/follow/";
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            var model = await _taskService.Done(id, userID);
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item3, "message");
+            return Ok(model.Item1);
         }
         [HttpPost]
         public async Task<IActionResult> Remark([FromBody] RemarkViewModel remark)
         {
-            return Ok(await _taskService.Remark(remark));
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            remark.UserID = userID;
+            var model = await _taskService.Remark(remark);
+            //Co followed thi moi thong bao
+            if (model.Item2)
+                await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item3, "message");
+
+            return Ok(model.Item1);
         }
         [AllowAnonymous]
         [HttpGet]
@@ -104,12 +164,12 @@ namespace WorkManagement.Controllers
         {
             return Ok(await _taskService.GetListProject());
         }
-        [HttpGet]
-        public async Task<IActionResult> GetListUser()
+        [HttpGet("{projectid}")]
+        public async Task<IActionResult> GetListUser(int projectid = 0)
         {
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
-            return Ok(await _taskService.GetListUser(userID));
+            return Ok(await _taskService.GetListUser(userID, projectid));
         }
         [HttpGet]
         public async Task<IActionResult> From()
@@ -117,6 +177,32 @@ namespace WorkManagement.Controllers
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
             return Ok(await _taskService.From(userID));
+        }
+        [HttpGet("{taskid}")]
+        public async Task<IActionResult> Follow(int taskid)
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _taskService.Follow(userID, taskid));
+        }
+        [HttpGet("{taskid}")]
+        public async Task<IActionResult> Undo(int taskid)
+        {
+            return Ok(await _taskService.Undo(taskid));
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDeputies()
+        {
+            return Ok(await _taskService.GetDeputies());
+        }
+        [HttpGet("{sort}")]
+        [HttpGet("{priority}/{sort}")]
+        [HttpGet]
+        public async Task<IActionResult> GetListTreeProjectDetail(string sort = "", string priority = "")
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            return Ok(await _taskService.GetListTreeProjectDetail(sort, priority, userID));
         }
     }
 }

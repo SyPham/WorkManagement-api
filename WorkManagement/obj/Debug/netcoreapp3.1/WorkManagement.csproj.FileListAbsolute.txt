@@ -161,5 +161,7 @@ F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Debug\netcoreapp3.1\Swash
 F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerGen.dll
 F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerUI.dll
 F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Debug\netcoreapp3.1\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Http.Features.dll
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Debug\netcoreapp3.1\libman.json
 F:\0.Document\wwroot\WorkManagement\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.MvcApplicationPartsAssemblyInfo.cs
 F:\0.Document\wwroot\WorkManagement\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.MvcApplicationPartsAssemblyInfo.cache

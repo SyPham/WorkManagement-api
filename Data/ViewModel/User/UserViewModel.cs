@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,7 +12,10 @@ namespace Data.ViewModel.User
         public string Password { get; set; }
         public int OCID { get; set; }
         public string Email { get; set; }
+        public string ImageUrl { get; set; }
         public int RoleID { get; set; }
+        public bool isLeader { get; set; }
+        public IFormFile Photo { get; set; }
 
     }
 }

@@ -3,6 +3,7 @@ using Data.ViewModel.OC;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -262,7 +263,26 @@ namespace Service.Helpers
             int tQtr = (curDate.Month - 1) / 3 + 1 + whichQtr;
             return new DateTime(curDate.Year, (tQtr * 3) + 1, 1).AddDays(-1);
         }
+        public static string ToUrlEncode(this string value)
+        {
+            string result = value;
 
+            string symbols = @"/\?#$& ";
+            if(result.Contains("-"))
+            {
+                result = result.Replace("-", "_");
+            }
+            foreach (var item in symbols)
+            {
+                result = result.Replace(item, '-');
+            }
+
+            string pattern = "-+";
+            Regex regex = new Regex(pattern);
+            result = regex.Replace(result, "-");
+
+            return result;
+        }
         public static DateTime QuarterStartDate(this DateTime curDate, int whichQtr)
         {
             return QuarterEnddate(curDate, whichQtr).AddDays(1).AddMonths(-3);
@@ -726,6 +746,7 @@ namespace Service.Helpers
 
         }
 
+
         public static bool IsNullOrEmpty(this object value)
         {
             if (value == null)
@@ -734,7 +755,24 @@ namespace Service.Helpers
             }
             return string.IsNullOrEmpty(value.ToString());
         }
+        public static DateTime ToParseIso8601(this string ISO8601String)
+        {
+            if (ISO8601String.IsNullOrEmpty())
+            {
+                return new DateTime();
+            }
+            var result = DateTime.Parse(ISO8601String);
+            return result;
+        }
+        public static string IsNotAvailable(this string value)
+        {
+            string result = value;
+            if (result.IsNullOrEmpty())
+                return "#N/A";
+            else
+                return result;
 
+        }
         public static string SHA256Hash(this string value)
         {
             StringBuilder Sb = new StringBuilder();

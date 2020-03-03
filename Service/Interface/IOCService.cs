@@ -17,7 +17,7 @@ namespace Service.Interface
         string GetNode(string code);
         string GetNode(int id);
         Task<IEnumerable<TreeViewOC>> GetListTreeOC(int parentID, int id);
-
+        Task<object> ListOCIDofUser(int ocid);
         Task<object> CreateOC(CreateOCViewModel task);
         Task<object> CreateSubOC(CreateOCViewModel task);
     }

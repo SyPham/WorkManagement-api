@@ -58,12 +58,12 @@ namespace Service.Implement
 
         public async Task<List<Role>> GetAll()
         {
-            return await _context.Roles.ToListAsync();
+            return await _context.Roles.Where(x=>!x.Name.ToLower().Contains("admin")).ToListAsync();
         }
 
         public async Task<PagedList<Role>> GetAllPaging( int page, int pageSize)
         {
-            var source = _context.Roles.AsQueryable();
+            var source = _context.Roles.Where(x => !x.Name.ToLower().Contains("admin")).AsQueryable();
            
             return await PagedList<Role>.CreateAsync(source, page, pageSize);
         }
@@ -87,6 +87,18 @@ namespace Service.Implement
                 return false;
 
             }
+        }
+        private bool disposed = false;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+            }
+            this.disposed = true;
         }
     }
 }

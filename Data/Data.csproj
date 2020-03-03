@@ -15,9 +15,14 @@
     <Compile Remove="Migrations\20200207073906_Version1.0.8.Designer.cs" />
     <Compile Remove="Migrations\20200207074039_Version1.0.8.cs" />
     <Compile Remove="Migrations\20200207074039_Version1.0.8.Designer.cs" />
+    <Compile Remove="Migrations\20200212032451_version1.1.4.cs" />
+    <Compile Remove="Migrations\20200212032451_version1.1.4.Designer.cs" />
+    <Compile Remove="Migrations\20200218021652_version2.0.2.cs" />
+    <Compile Remove="Migrations\20200218021652_version2.0.2.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.1">
       <PrivateAssets>all</PrivateAssets>

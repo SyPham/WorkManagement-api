@@ -15,8 +15,9 @@ namespace Service.Interface
         Task<bool> Delete(int id);
         Task<User> GetByID(int id);
         Task<List<User>> GetAll();
+        Task<bool> UploapProfile(int id, byte[] image);
         Task<object> GetListUser();
-        Task<PagedList<User>> GetAllPaging(string keyword, int page, int pageSize);
-
+        Task<bool> ChangeAvatar(int userid, string imagePath);
+        Task<PagedList<ListViewModel>> GetAllPaging(int page, int pageSize, string keyword);
     }
 }
