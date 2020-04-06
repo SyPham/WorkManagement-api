@@ -29,6 +29,9 @@ namespace Data
         public DbSet<Chat> Chats { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Participant> Participants { get; set; }
+        public DbSet<Tutorial> Tutorials { get; set; }
+        public DbSet<History> Histories { get; set; }
+        public DbSet<UserJoinHub> UserJoinHubs { get; set; }
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
 

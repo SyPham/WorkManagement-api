@@ -59,7 +59,13 @@ namespace Service.Implement
 
             }
         }
-
+        public async System.Threading.Tasks.Task CreateRange(List<CreateNotifyParams> entity)
+        {
+            foreach (var item in entity)
+            {
+               await Create(item);
+            }
+        }
 
 
         public async Task<bool> Delete(int id)
@@ -110,7 +116,7 @@ namespace Service.Implement
         public async Task<object> GetAllByUserID(int userid,int page, int pageSize)
         {
             var userModel = _context.Users;
-            var model = await _context.NotificationDetails.Where(x => x.UserID == userid)
+            var model1 = await _context.NotificationDetails.Where(x => x.UserID == userid)
                 .Join(_context.Notifications,
                  detail => detail.NotificationID,
                 notify => notify.ID,
@@ -140,8 +146,27 @@ namespace Service.Implement
                     ImageBase64 = _.b.ImageBase64,
                     CreatedTime = _.a.notify.CreatedTime,
                 }).OrderByDescending(_ => _.CreatedTime).ToListAsync();
+            var model2 = await _context.NotificationDetails.Where(x => x.UserID == userid)
+               .Join(_context.Notifications.Where(x=> x.UserID == 0 && x.Function.Equals(Data.Enum.AlertType.BeLate.ToSafetyString())),
+                detail => detail.NotificationID,
+               notify => notify.ID,
+               (detail, notify) => new
+               {
+                   notify,
+                   detail
+               }).Select(_ => new NotificationViewModel
+               {
+                   ID = _.detail.ID,
+                   Message = _.notify.Message,
+                   Function = _.notify.Function,
+                   BeAssigned = _.detail.UserID,
+                   Seen = _.detail.Seen,
+                   URL = _.notify.URL,
+                   CreatedTime = _.notify.CreatedTime,
+               }).OrderByDescending(_ => _.CreatedTime).ToListAsync();
             var total = 0;
             var listID = new List<int>();
+            var model = model1.Union(model2).ToList();
             foreach (var item in model)
             {
                 if (item.Seen == false)
@@ -149,7 +174,6 @@ namespace Service.Implement
                     total++;
                     listID.Add(item.ID);
                 }
-
             }
             var paging = PagedList<NotificationViewModel>.Create(model, page, pageSize);
            

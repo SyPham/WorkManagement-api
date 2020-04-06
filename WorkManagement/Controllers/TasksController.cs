@@ -90,15 +90,13 @@ namespace WorkManagement.Controllers
             return Ok(await _taskService.GetListTreeRoutine(sort, priority, userID, ocid));
         }
 
-
-
-       
         [HttpGet]
-        public async Task<IActionResult> GetListTreeHistory()
+        [HttpGet("{start}/{end}")]
+        public async Task<IActionResult> GetListTreeHistory(string start, string end)
         {
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
-            return Ok(await _taskService.GetListTreeHistory(userID));
+            return Ok(await _taskService.GetListTreeHistory(userID, start, end));
         }
         [HttpPost]
         public async Task<IActionResult> CreateTask([FromBody]CreateTaskViewModel createTask)
@@ -108,7 +106,8 @@ namespace WorkManagement.Controllers
             createTask.CreatedBy = userID;
             createTask.UserID = userID;
             var model = await _taskService.CreateTask(createTask);
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item2, "message");
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item2, model.Item3);
+            await _hubContext.Clients.All.SendAsync("ReceiveAlertMessage", model.Item2, model.Item3);
             return Ok(model.Item1);
         }
         [HttpPost]

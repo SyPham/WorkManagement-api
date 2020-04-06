@@ -6,9 +6,11 @@ namespace Data.Enum
 {
     public enum AlertDeadline
     {
-        EveryDay = 1,
+        Weekly = 1,
         Monthly = 2,
         Quarterly = 3,
-        Deadline = 4
+        Deadline = 4,
+        Yearly = 5,
+        Daily = 6
     }
 }

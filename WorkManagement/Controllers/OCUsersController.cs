@@ -9,6 +9,7 @@ using Data;
 using Data.Models;
 using Service.Interface;
 using Data.ViewModel.OC;
+using WorkManagement.Helpers;
 
 namespace WorkManagement.Controllers
 {
@@ -28,9 +29,16 @@ namespace WorkManagement.Controllers
         {
             return Ok(await _ocUserService.GetListUser(ocid));
         }
+        [HttpGet("{page}/{pageSize}/{ocid}")]
+        public async Task<ActionResult> GetUsers(int page, int pageSize,int ocid)
+        {
+            var lists = await _ocUserService.GetListUser(page, pageSize, ocid);
+            Response.AddPagination(lists.CurrentPage, lists.PageSize, lists.TotalCount, lists.TotalPages);
 
+            return Ok(lists);
+        }
         [HttpGet("{userid}/{ocid}/{status}")]
-        public async Task<ActionResult> AddOrUpdate(int userid, int ocid,bool status)
+        public async Task<ActionResult> AddOrUpdate(int userid, int ocid, bool status)
         {
             return Ok( await _ocUserService.AddOrUpdate(userid,ocid, status));
         }

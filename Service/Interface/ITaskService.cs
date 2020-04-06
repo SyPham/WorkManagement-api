@@ -9,6 +9,7 @@ namespace Service.Interface
 {
    public interface ITaskService
     {
+        Task TaskListIsLate(int userid);
         Task<object> LoadTask(string name,int userid, int ocID, int page, int pageSize);
         Task<object> LoadTaskHistory(string name, int userid, int ocID, int page, int pageSize);
         Task<List<TreeViewTask>> GetListTree(string sort = "", string priority = "", int userid = 0, string startDate = "", string endDate = "", string weekdays = "", string monthly = "", string quarterly = "");
@@ -16,15 +17,14 @@ namespace Service.Interface
         Task<List<TreeViewTask>> GetListTreeAbnormal(int ocid,string priority, int userid, string startDate, string endDate, string weekdays);
         Task<List<TreeViewTask>> GetListTreeProjectDetail(string sort = "",string priority = "",int userid = 0,int projectid=0);
         Task<List<TreeViewTask>> GetListTreeFollow(string sort = "", string priority = "", int userid = 0);
-
+        Task<List<TreeViewTask>> GetListTreeHistory(int userid, string start, string end);
         Task<List<TreeViewTask>> GetListTree();
-        Task<Tuple<bool,string>> CreateTask(CreateTaskViewModel task);
+        Task<Tuple<bool,string,object>> CreateTask(CreateTaskViewModel task);
         Task<object> CreateSubTask(CreateTaskViewModel task);
         Task<object> CreateRemark(int taskID,string remark);
         Task<object> Delete(int id,int userid);
         Task<object> From(int userid);
         Task<Tuple<bool,bool,string>> Done(int id, int userid);
-        Task<List<TreeViewTask>> GetListTreeHistory(int userid);
         Task<object> GetListUser(int userid,int projectid);
         Task<List<ProjectViewModel>> GetListProject();
         Task<object> UpdateTask(UpdateTaskViewModel task);

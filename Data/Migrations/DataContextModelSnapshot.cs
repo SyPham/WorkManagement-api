@@ -148,6 +148,33 @@ namespace Data.Migrations
                     b.ToTable("FromWhos");
                 });
 
+            modelBuilder.Entity("Data.Models.History", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Deadline")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("TaskID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Histories");
+                });
+
             modelBuilder.Entity("Data.Models.JobType", b =>
                 {
                     b.Property<int>("ID")
@@ -313,6 +340,9 @@ namespace Data.Migrations
                     b.Property<int>("Room")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
                     b.HasKey("ID");
 
                     b.ToTable("Projects");
@@ -385,16 +415,34 @@ namespace Data.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("CreatedDateForEachTask")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DateOfMonthly")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DateOfWeekly")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("DepartmentID")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DueDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("DueDateDaily")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EveryDay")
+                    b.Property<string>("DueDateMonthly")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DueDateQuarterly")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DueDateWeekly")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DueDateYearly")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("FinishedMainTask")
@@ -415,9 +463,6 @@ namespace Data.Migrations
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
-                    b.Property<string>("Monthly")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("OCID")
                         .HasColumnType("int");
 
@@ -431,17 +476,20 @@ namespace Data.Migrations
                     b.Property<int>("ProjectID")
                         .HasColumnType("int");
 
-                    b.Property<string>("Quarterly")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Remark")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Seen")
                         .HasColumnType("bit");
 
+                    b.Property<string>("SpecificDate")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
+
+                    b.Property<int>("periodType")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -468,6 +516,39 @@ namespace Data.Migrations
                     b.HasIndex("ProjectID");
 
                     b.ToTable("TeamMembers");
+                });
+
+            modelBuilder.Entity("Data.Models.Tutorial", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ParentID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProjectID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TaskID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("URL")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Tutorials");
                 });
 
             modelBuilder.Entity("Data.Models.User", b =>
@@ -512,6 +593,27 @@ namespace Data.Migrations
                     b.HasIndex("RoleID");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Data.Models.UserJoinHub", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ConnectionId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("UserJoinHubs");
                 });
 
             modelBuilder.Entity("Data.Models.Manager", b =>

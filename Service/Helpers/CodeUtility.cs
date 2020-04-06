@@ -27,6 +27,65 @@ namespace Service.Helpers
                 }
             }
         }
+        public static DateTime ToParseStringDateTime(this string dateString)
+        {
+            DateTime dateTime;
+            if (DateTime.TryParse(dateString, out dateTime))
+                return dateTime;
+            else
+                return DateTime.MinValue;
+        }
+        public static IEnumerable<DateTime> AllDatesInMonth(this int month, int year)
+        {
+
+            int days = DateTime.DaysInMonth(year, month);
+            for (int day = 1; day <= days; day++)
+            {
+                yield return new DateTime(year, month, day);
+            }
+        }
+        public static IEnumerable<DateTime> AllDatesInMonth(this int month)
+        {
+            int year = DateTime.Now.Year;
+            int days = DateTime.DaysInMonth(year, month);
+            for (int day = 1; day <= days; day++)
+            {
+                yield return new DateTime(year, month, day);
+            }
+        }
+        public static IEnumerable<DateTime> ToGetMondaysInMonth(this int month)
+        {
+            return AllDatesInMonth(month).Where(x => x.DayOfWeek.Equals(DayOfWeek.Monday));
+        }
+        public static IEnumerable<DateTime> ToGetTuesdaysInMonth(this int month)
+        {
+            return AllDatesInMonth(month).Where(x => x.DayOfWeek.Equals(DayOfWeek.Tuesday));
+        }
+        public static IEnumerable<DateTime> ToGetWednesdaysInMonth(this int month)
+        {
+            return AllDatesInMonth(month).Where(x => x.DayOfWeek.Equals(DayOfWeek.Wednesday));
+        }
+        public static IEnumerable<DateTime> ToGetThurdaysInMonth(this int month)
+        {
+            return AllDatesInMonth(month).Where(x => x.DayOfWeek.Equals(DayOfWeek.Thursday));
+        }
+        public static IEnumerable<DateTime> ToGetFridaysInMonth(this int month)
+        {
+            return AllDatesInMonth(month).Where(x => x.DayOfWeek.Equals(DayOfWeek.Friday));
+        }
+        public static IEnumerable<DateTime> ToGetSaturdaysInMonth(this int month)
+        {
+            return AllDatesInMonth(month).Where(x => x.DayOfWeek.Equals(DayOfWeek.Saturday));
+        }
+        public static IEnumerable<DateTime> ToGetSundaysInMonth(this int month)
+        {
+            return AllDatesInMonth(month).Where(x => x.DayOfWeek.Equals(DayOfWeek.Sunday));
+        }
+
+        public static string ToParseDatetimeToStringISO8061(this DateTime dateTime)
+        {
+            return dateTime.Date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+        }
         public static string ToStringDateTime(this DateTime? dt, string format)
         => dt == null ? "n/a" : ((DateTime)dt).ToString(format);
         public static bool IsDouble(this object value)
@@ -54,7 +113,34 @@ namespace Service.Helpers
             var descendants = rootNodes.SelectMany(_ => GetAllDescendants(_.Children));
             return rootNodes.Concat(descendants);
         }
+        public static string GetLastDateOfNextQuarter(this string quarter)
+        {
+            var quarters = new string[]{
+                  "First quarter",
+                  "Second quarter",
+                  "Third quarter",
+                  "Fourth quarter"
+                };
 
+            var listMonthOfQuarter = new List<int[]>()
+            {
+                new int[]{1,2,3,4},
+                new int[]{4,5,6,7},
+                new int[]{7,8,9,10},
+                new int[]{10,11,12}
+            };
+            int quarterIndex = Array.IndexOf(quarters, quarter);
+            int year = DateTime.Now.Year;
+            var month = listMonthOfQuarter.ElementAt(quarterIndex).LastOrDefault();
+            if (month == 12)
+            {
+                month = 4;
+                year = year + 1;
+                quarterIndex = 1;
+            }
+            var date = new DateTime(year, month, 1).ToStringFormat("{0:MMM d}");
+            return quarters[quarterIndex] + ", " + date;
+        }
 
         /// <summary>
         /// Cắt chuỗi bắt đầu từ bên trái
@@ -268,7 +354,7 @@ namespace Service.Helpers
             string result = value;
 
             string symbols = @"/\?#$& ";
-            if(result.Contains("-"))
+            if (result.Contains("-"))
             {
                 result = result.Replace("-", "_");
             }
@@ -757,21 +843,116 @@ namespace Service.Helpers
         }
         public static DateTime ToParseIso8601(this string ISO8601String)
         {
-            if (ISO8601String.IsNullOrEmpty())
-            {
+            if (ISO8601String == "#N/A")
                 return new DateTime();
-            }
-            var result = DateTime.Parse(ISO8601String);
+
+            if (ISO8601String.IsNullOrEmpty())
+                return new DateTime();
+            var result = DateTime.Parse(ISO8601String, null, DateTimeStyles.AssumeLocal);
             return result;
+        }
+        public static bool IsNewDateTime(this DateTime date)
+        {
+            var result = date;
+            if (result.Date == new DateTime().Date)
+                return true;
+            else
+                return false;
+
         }
         public static string IsNotAvailable(this string value)
         {
             string result = value;
             if (result.IsNullOrEmpty())
-                return "#N/A";
+                return "";
             else
                 return result;
 
+        }
+        public static string FindDatesOfMonth(this object value)
+        {
+            var _datesOfMonth = new string[]{"","First","Second","Third","Fourth","Fifth","Sixth","Seventh","Eighth","Nighth",
+            "Tenth","Eleventh","Twelfth","Thirteenth","Fourteenth",
+                "Fifteenth","Sixteenth","Seventeenth","Eighteenth","NineTeenth",
+                "Twentieth","Twenty-first","Twenty-second","Twenty-third","Twenty-fourth","Twenty-fifth","Twenty-sixth","Twenty-seventh","Twenty-eight","Twenty-nineth","Thirtieth","Thirty-first"};
+            return _datesOfMonth[value.ToInt()];
+        }
+        public static string FindShortDatesOfMonth(this object value)
+        {
+            var _datesOfMonth = new string[]{"","First","Second","Third","Fourth","Fifth","Sixth","Seventh","Eighth","Nighth",
+            "Tenth","Eleventh","Twelfth","Thirteenth","Fourteenth",
+                "Fifteenth","Sixteenth","Seventeenth","Eighteenth","NineTeenth",
+                "Twentieth","Twenty-first","Twenty-second","Twenty-third","Twenty-fourth","Twenty-fifth","Twenty-sixth","Twenty-seventh","Twenty-eight","Twenty-nineth","Thirtieth","Thirty-first"};
+
+            if (value.ToInt() > 0)
+            {
+                string temp = _datesOfMonth[value.ToInt()].ToRight(2);
+                return value + temp;
+            }
+            return _datesOfMonth[value.ToInt()];
+        }
+        /// <summary>
+        /// Example
+        /// create date time 2008-03-09 16:05:07.123
+        /// DateTime dt = new DateTime(2008, 3, 9, 16, 5, 7, 123);
+        /// String.Format("{0:y yy yyy yyyy}", dt);   "8 08 008 2008"   year
+        /// String.Format("{0:M MM MMM MMMM}", dt);   "3 03 Mar March"  month
+        /// String.Format("{0:d dd ddd dddd}", dt);   "9 09 Sun Sunday" day
+        /// String.Format("{0:h hh H HH}",     dt);   "4 04 16 16"      hour 12/24
+        /// String.Format("{0:m mm}",          dt);   "5 05"            minute
+        /// String.Format("{0:s ss}",          dt);   "7 07"            second
+        /// String.Format("{0:f ff fff ffff}", dt);   "1 12 123 1230"   sec.fraction
+        /// String.Format("{0:F FF FFF FFFF}", dt);   "1 12 123 123"    without zeroes
+        /// String.Format("{0:t tt}",          dt);   "P PM"            A.M. or P.M.
+        /// String.Format("{0:z zz zzz}",      dt);   "-6 -06 -06:00"   time zone
+        /// month/day numbers without/with leading zeroes
+        /// String.Format("{0:M/d/yyyy}", dt);             "3/9/2008"
+        /// String.Format("{0:MM/dd/yyyy}", dt);           "03/09/2008"
+        ///
+        /// day/month names
+        /// String.Format("{0:ddd, MMM d, yyyy}", dt);     "Sun, Mar 9, 2008"
+        /// String.Format("{0:dddd, MMMM d, yyyy}", dt);   "Sunday, March 9, 2008"
+        ///
+        /// two/four digit year
+        /// String.Format("{0:MM/dd/yy}", dt);             "03/09/08"
+        /// String.Format("{0:MM/dd/yyyy}", dt);           "03/09/2008"
+        /// String.Format("{0:t}", dt); "4:05 PM"                         ShortTime
+        /// String.Format("{0:d}", dt); "3/9/2008"                        ShortDate
+        /// String.Format("{0:T}", dt); "4:05:07 PM"                      LongTime
+        /// String.Format("{0:D}", dt); "Sunday, March 09, 2008"          LongDate
+        /// String.Format("{0:f}", dt); "Sunday, March 09, 2008 4:05 PM"  LongDate+ShortTime
+        /// String.Format("{0:F}", dt); "Sunday, March 09, 2008 4:05:07 PM" FullDateTime
+        /// String.Format("{0:g}", dt); "3/9/2008 4:05 PM"                ShortDate+ShortTime
+        /// String.Format("{0:G}", dt); "3/9/2008 4:05:07 PM"             ShortDate+LongTime
+        /// String.Format("{0:m}", dt); "March 09"                        MonthDay
+        /// String.Format("{0:y}", dt); "March, 2008"                     YearMonth
+        /// String.Format("{0:r}", dt); "Sun, 09 Mar 2008 16:05:07 GMT"   RFC1123
+        /// String.Format("{0:s}", dt); "2008-03-09T16:05:07"             SortableDateTime
+        /// String.Format("{0:u}", dt); "2008-03-09 16:05:07Z"            UniversalSortableDateTime
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="format"></param>
+        /// <returns>
+        /// </returns>
+        public static string ToStringFormat(this DateTime date, string format = "{0:MM/dd/yyyy}")
+        {
+            if (date.IsNewDateTime())
+                return "";
+            else
+                return String.Format(format, date);
+        }
+
+        public static string ToStringFormatISO(this string dateISO, string format = "{0:MM/dd/yyyy}")
+        {
+            var date = dateISO.ToParseIso8601();
+            if (date.Date == new DateTime().Date)
+                return "";
+            else
+                return String.Format(format, date);
+        }
+        public static string ToJoin(this object[] value, string charactor = ",")
+        {
+            return string.Join(charactor, value);
         }
         public static string SHA256Hash(this string value)
         {

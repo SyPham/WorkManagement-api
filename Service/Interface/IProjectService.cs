@@ -12,6 +12,8 @@ namespace Service.Interface
     public interface IProjectService
     {
         Task<bool> Create(Project entity);
+        Task<object> Open(int projectId);
+        Task<object> Clone(int projectId);
         Task<bool> Update(Project entity);
         Task<bool> Delete(int id);
         Task<Tuple<bool, string>> AddManager(AddManagerViewModel addManager);

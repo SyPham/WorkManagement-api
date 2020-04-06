@@ -36,8 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Hubs\Interface\" />
     <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\video\" />
   </ItemGroup>
 
 

@@ -14,6 +14,7 @@ namespace Data.Models
 
         public int ID { get; set; }
         public string Name { get; set; }
+        public bool Status { get; set; }
         public int CreatedBy { get; set; }
         public int Room { get; set; }
         public virtual Room RoomTable { get; set; }

@@ -6,6 +6,7 @@ using Data.ViewModel.Notification;
 using Data.ViewModel.OC;
 using Data.ViewModel.Project;
 using Data.ViewModel.Task;
+using Data.ViewModel.Tutorial;
 using Data.ViewModel.User;
 using Service.Helpers;
 using System;
@@ -26,10 +27,8 @@ namespace WorkManagement.Helpers
                 .ForMember(x => x.OCID, option => option.Ignore());
             CreateMap<Task, CreateTaskViewModel>().ForMember(x => x.PIC, option => option.Ignore())
                 .ForMember(d => d.CreatedBy, s => s.MapFrom(p => p.FromWhoID));
-            CreateMap<CreateTaskViewModel, Task>()
-                 .ForMember(dest => dest.DueDate,
-                opt => opt.MapFrom(src => src.Deadline.ToParseIso8601()));
-
+            CreateMap<CreateTaskViewModel, Task>();
+                
             CreateMap<Task, TreeViewTask>();
 
             CreateMap<TreeViewTask, Task>();
@@ -38,6 +37,10 @@ namespace WorkManagement.Helpers
             CreateMap<User, UserViewModel>();
 
             CreateMap<UserViewModel, User>();
+
+            CreateMap<Tutorial, TreeViewTutorial>();
+
+            CreateMap<TreeViewTutorial, Tutorial>();
 
             CreateMap<OC, CreateOCViewModel>();
 
@@ -49,7 +52,8 @@ namespace WorkManagement.Helpers
 
             CreateMap<Project, ProjectViewModel>()
                 .ForMember(d => d.Members, s => s.MapFrom(p => p.TeamMembers.Select(_=> _.UserID).ToList()))
-                .ForMember(d => d.Manager, s => s.MapFrom(p => p.Managers.Select(_ => _.UserID).ToList()));
+                .ForMember(d => d.Manager, s => s.MapFrom(p => p.Managers.Select(_ => _.UserID).ToList()))
+             .ForMember(d => d.CreatedDate, s => s.MapFrom(p => p.CreatedDate.ToString("MMM d, yyyy")));
 
             CreateMap<ProjectViewModel, Project>()
                 .ForMember(x => x.Managers, option => option.Ignore())

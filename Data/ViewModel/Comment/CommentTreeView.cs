@@ -15,6 +15,7 @@ namespace Data.ViewModel.Comment
         public int ID { get; set; }
         public string Username { get; set; }
         public int UserID { get; set; }
+        public int TaskID { get; set; }
         public string Content { get; set; }
         public int ParentID { get; set; }
         public byte[] ImageBase64 { get; set; }

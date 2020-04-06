@@ -8,6 +8,7 @@ namespace Data.ViewModel.Comment
     {
         public int ParentID { get; set; }
         public int UserID { get; set; }
+        public int CurrentUser { get; set; }
         public int TaskID { get; set; }
         public string Content { get; set; }
        

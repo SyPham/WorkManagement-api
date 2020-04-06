@@ -9,10 +9,11 @@ namespace Service.Interface
 {
    public interface ICommentService
     {
-        Task<object> Add(Comment comment);
+        Task<Tuple<bool, string>> Add(Comment comment,int currentUser);
         //Task<object> Delete();
-        Task<object> AddSub(AddSubViewModel subcomment);
+        Task<Tuple<bool, string>> AddSub(AddSubViewModel subcomment);
         Task<object> Seen(int comtID, int userID);
         Task<IEnumerable<CommentTreeView>> GetAllTreeView(int taskid, int userid);
+        Task<IEnumerable<TaskHasComment>> GetAllCommentWithTask(int userid);
     }
 }

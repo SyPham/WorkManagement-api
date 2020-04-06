@@ -35,6 +35,7 @@ namespace WorkManagement.Controllers
             _hubContext = hubContext;
         }
 
+        
         // GET: api/Projects
         [HttpGet("{page}/{pageSize}/{keyword}")]
         [HttpGet("{page}/{pageSize}")]
@@ -56,8 +57,6 @@ namespace WorkManagement.Controllers
         {
             return Ok(await _projectService.GetAll());
         }
-        [HttpGet]
-        [HttpGet("{page}/{pageSize}")]
         [HttpGet("{page}/{pageSize}/{projectName}")]
         public async Task<ActionResult> GetProjects(int page = 1, int pageSize = 20, string projectName = "")
         {
@@ -65,6 +64,26 @@ namespace WorkManagement.Controllers
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
             return Ok(await _projectService.GetProjects(userID, page, pageSize, projectName));
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetProjects([FromQuery]PaginationParams param)
+        {
+
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            var lists = await _projectService.GetAllPaging(userID, param.PageNumber, param.PageSize, "");
+            Response.AddPagination(lists.CurrentPage, lists.PageSize, lists.TotalCount, lists.TotalPages);
+            return Ok(lists);
+        }
+        [HttpGet("{projectName}")]
+        public async Task<ActionResult> Search([FromQuery]PaginationParams param, string projectName)
+        {
+
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            var lists = await _projectService.GetAllPaging(userID, param.PageNumber, param.PageSize, projectName);
+            Response.AddPagination(lists.CurrentPage, lists.PageSize, lists.TotalCount, lists.TotalPages);
+            return Ok(lists);
         }
         [HttpGet]
         public async Task<ActionResult> GetUsers()
@@ -87,6 +106,18 @@ namespace WorkManagement.Controllers
                 return NotFound();
             }
 
+            return Ok(project);
+        }
+        [HttpGet("{projectId}")]
+        public async Task<ActionResult> Open(int projectId)
+        {
+            var project = await _projectService.Open(projectId);
+            return Ok(project);
+        }
+        [HttpGet("{projectId}")]
+        public async Task<ActionResult> Clone(int projectId)
+        {
+            var project = await _projectService.Clone(projectId);
             return Ok(project);
         }
         [HttpGet("{id}")]

@@ -11,6 +11,7 @@ namespace Service.Interface
     public interface INotificationService
     {
         Task<bool> Create(CreateNotifyParams entity);
+        System.Threading.Tasks.Task CreateRange(List<CreateNotifyParams> entity);
         Task<bool> Update(Notification entity);
         Task<bool> Delete(int id);
         Task<Notification> GetByID(int id);

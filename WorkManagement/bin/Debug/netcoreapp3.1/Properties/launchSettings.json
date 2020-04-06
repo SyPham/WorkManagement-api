@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -20,8 +20,8 @@
     "WorkManagement": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
-      "applicationUrl": "http://10.4.4.224:93",
+      "launchUrl": "swagger",
+      "applicationUrl": "http://10.4.4.224:11111",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

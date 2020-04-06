@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Data;
 using Data.Models;
 using Service.Interface;
+using WorkManagement.Helpers;
 
 namespace WorkManagement.Controllers
 {
@@ -36,6 +37,13 @@ namespace WorkManagement.Controllers
                 page,
                 pageSize
             }); 
+        }
+        [HttpGet("{page}/{pageSize}")]
+        public async Task<ActionResult> GetRoles(int page, int pageSize)
+        {
+            var model = await _roleService.GetAllPaging(page, pageSize);
+            Response.AddPagination(model.CurrentPage, model.PageSize, model.TotalCount, model.TotalPages);
+            return Ok(model);
         }
         [HttpGet]
         public async Task<ActionResult> GetAll()

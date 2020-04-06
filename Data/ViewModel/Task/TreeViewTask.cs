@@ -13,6 +13,9 @@ namespace Data.ViewModel.Task
             this.children = new List<TreeViewTask>();
         }
         
+        public bool VideoStatus { get; set; }
+        public Data.Models.Tutorial Tutorial { get; set; }
+        public string VideoLink { get; set; }
         public int ID { get; set; }
         public string JobName { get; set; }
         public string Priority { get; set; }
@@ -20,19 +23,15 @@ namespace Data.ViewModel.Task
         public string Description { get; set; }
         public int Level { get; set; }
         public int ParentID { get; set; }
-        public string DueDate { get; set; }
-        public string Deadline { get; set; }
         public string CreatedDate { get; set; }
         public string Remark { get; set; }
         public string PIC { get; set; }
         public string From { get; set; }
         public string DeputyName { get; set; }
         public string ProjectName { get; set; }
-        public string EveryDay { get; set; }
-        public string Quarterly { get; set; }
-        public string Monthly { get; set; }
-        public bool Follow { get; set; }
+        public string Follow { get; set; }
         public int JobTypeID { get; set; }
+        public Data.Enum.PeriodType periodType { get; set; }
 
         public int CreatedBy { get; set; }
         public int ProjectID { get; set; }
@@ -43,12 +42,20 @@ namespace Data.ViewModel.Task
         public List<int> PICs { get; set; }
         public BeAssigned FromWho { get; set; }
         public FromWhere FromWhere { get; set; }
-
-        public Data.Models.Project Project { get; set; }
+        public string DateOfWeekly { get; set; }
+        public Models.Project Project { get; set; }
+        public List<History.History> Histories { get; set; }
 
         public string state { get; set; }
         public bool FinishTask { get; set; }
-    
+        public string DueDateDaily { get; set; }
+        public string DueDateWeekly { get; set; }
+        public string DueDateMonthly { get; set; }
+        public string DueDateQuarterly { get; set; }
+        public string DueDateYearly { get; set; }
+        public string SpecificDate { get; set; }
+        public string CreatedDateForEachTask { get; set; }
+        
         public bool HasChildren
         {
             get { return children.Any(); }
@@ -56,7 +63,7 @@ namespace Data.ViewModel.Task
 
         public List<TreeViewTask> children { get; set; }
     }
-   
+
     public class BeAssigned
     {
         public int ID { get; set; }

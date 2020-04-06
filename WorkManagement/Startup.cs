@@ -49,6 +49,8 @@ namespace WorkManagement
             })
            .AddJwtBearer(options =>
            {
+               options.RequireHttpsMetadata = false;
+               options.SaveToken = true;
                options.TokenValidationParameters = new TokenValidationParameters
                {
                    ValidateIssuerSigningKey = true,
@@ -67,7 +69,7 @@ namespace WorkManagement
             });
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WM API", Version = "v1" });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -101,7 +103,14 @@ namespace WorkManagement
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
-                    builder => builder.WithOrigins("http://10.4.4.224:93", "http://10.4.4.224:999", "http://10.4.4.224:94", "http://10.4.4.92:92") //register for client
+                    builder => builder.WithOrigins("http://10.4.4.224:93", 
+                    "http://10.4.4.224:11113", 
+                    "http://10.4.4.224:100", 
+                    "http://10.4.4.224:11111", 
+                    "http://10.4.4.224:999", 
+                    "http://10.4.4.224:94", 
+                    "http://10.4.0.76:97", 
+                    "http://10.4.0.76:96") //register for client
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials());
@@ -118,6 +127,7 @@ namespace WorkManagement
             services.AddScoped<ICommentService, CommentService>();
 
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<ITutorialService, TutorialService>();
             services.AddScoped<INotificationDetailService, NotificationDetailService>();
         }
 
@@ -158,7 +168,7 @@ namespace WorkManagement
             }
 
 
-
+          
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("CorsPolicy");

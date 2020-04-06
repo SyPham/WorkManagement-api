@@ -1,6 +1,7 @@
 ﻿using Data;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Service.Helpers;
 using Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace Service.Implement
                 var item = await _context.OCUsers.Include(x => x.OC).FirstOrDefaultAsync(x => x.OCID == ocid && x.UserID == userid);
                 var user = await _context.Users.FindAsync(userid);
                 //Neu user do chuyen  status ve false thi xoa luon
-                if (status && item != null)
+                if (!status && item != null)
                 {
                     user.LevelOC = 0;
                     user.OCID = 0;
@@ -63,7 +64,7 @@ namespace Service.Implement
                     }
 
                 }
-                        await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 ////Neu chua co thi them moi
                 //if (item == null)
                 //{
@@ -117,17 +118,29 @@ namespace Service.Implement
             }
         }
 
-        public async Task<object> GetListUser(int ocid)
+        public async Task<PagedList<Data.ViewModel.OCUser.User>> GetListUser(int page = 1, int pageSize = 10, int ocid = 0)
         {
-            var users = await _context.Users.Select(x => new
+            var source = await _context.Users.Select(x => new Data.ViewModel.OCUser.User
             {
-                x.ID,
-                x.Username,
+                ID = x.ID,
+                Username = x.Username,
                 RoleName = x.Role.Name,
-                x.RoleID,
+                RoleID = x.RoleID,
                 Status = _context.OCUsers.Any(a => a.UserID == x.ID && a.OCID == ocid && a.Status == true)
             }).ToListAsync();
-            return users;
+            return  PagedList<Data.ViewModel.OCUser.User>.Create(source, page, pageSize);
+        }
+        public async Task<object> GetListUser(int ocid)
+        {
+            var source = await _context.Users.Select(x => new Data.ViewModel.OCUser.User
+            {
+                ID = x.ID,
+                Username = x.Username,
+                RoleName = x.Role.Name,
+                RoleID = x.RoleID,
+                Status = _context.OCUsers.Any(a => a.UserID == x.ID && a.OCID == ocid && a.Status == true)
+            }).ToListAsync();
+            return source;
         }
         private bool disposed = false;
         protected virtual void Dispose(bool disposing)

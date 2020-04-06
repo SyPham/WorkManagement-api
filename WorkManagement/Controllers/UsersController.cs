@@ -113,6 +113,7 @@ namespace WorkManagement.Controllers
         public async Task<ActionResult> GetAllPaging(int page, int pageSize, string keyword = "")
         {
             var model = await _userService.GetAllPaging(page, pageSize, keyword);
+            Response.AddPagination(model.CurrentPage, model.PageSize, model.TotalCount, model.TotalPages);
             return Ok(new
             {
                 data = model,
@@ -120,6 +121,14 @@ namespace WorkManagement.Controllers
                 page,
                 pageSize
             });
+        }
+        [HttpGet("{page}/{pageSize}/{keyword}")]
+        [HttpGet("{page}/{pageSize}")]
+        public async Task<ActionResult> GetAllUsers(int page, int pageSize, string keyword = "")
+        {
+            var model = await _userService.GetAllPaging(page, pageSize, keyword);
+            Response.AddPagination(model.CurrentPage, model.PageSize, model.TotalCount, model.TotalPages);
+            return Ok(model);
         }
     }
 }

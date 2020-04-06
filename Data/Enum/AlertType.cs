@@ -15,9 +15,12 @@ namespace Data.Enum
         Manager = 7,
         Member = 8,
         ChangeDeadline = 9,
-        ChangeEveryDay = 10,
+        ChangeWeekly = 10,
         ChangeMonthly = 11,
-        ChangeQuarterly = 12
+        ChangeQuarterly = 12,
+        PostComment = 13,
+        ReplyComment = 14,
+        BeLate = 15
 
     }
 }

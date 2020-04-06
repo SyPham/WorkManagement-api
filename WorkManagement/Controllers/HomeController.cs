@@ -19,11 +19,13 @@ namespace WorkManagement.Controllers
     public class HomeController : ControllerBase
     {
         private readonly INotificationService _notificationService;
+        private readonly ITaskService _taskService;
 
-        public HomeController(INotificationService notificationService)
+        public HomeController(INotificationService notificationService, ITaskService taskService)
         {
 
             _notificationService = notificationService;
+            _taskService = taskService;
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> Seen(int id)
@@ -31,18 +33,33 @@ namespace WorkManagement.Controllers
            
             return Ok(await _notificationService.Seen(id));
         }
+        [HttpGet]
+        public async Task<IActionResult> TaskListIsLate()
+        {
+
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            await _taskService.TaskListIsLate(userID);
+            return Ok();
+        }
+        [HttpGet("{page}/{pageSize}/{userid}")]
         [HttpGet("{page}/{pageSize}")]
-        public async Task<IActionResult> GetAllNotificationCurrentUser(int page, int pageSize)
+        public async Task<IActionResult> GetAllNotificationCurrentUser(int page, int pageSize, int userid)
        {
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            if (userid > 0)
+                userID = userid;
             return Ok(await _notificationService.GetAllByUserID(userID,page,pageSize));
         }
         [HttpGet("{page}/{pageSize}")]
-        public async Task<IActionResult> GetNotificationByUser(int page, int pageSize)
+        [HttpGet("{page}/{pageSize}/{userid}")]
+        public async Task<IActionResult> GetNotificationByUser(int page, int pageSize, int userid)
         {
             string token = Request.Headers["Authorization"];
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            if (userid > 0)
+                userID = userid;
             return Ok(await _notificationService.GetNotificationByUser(userID, page, pageSize));
         }
         [AllowAnonymous]
