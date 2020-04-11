@@ -30,9 +30,10 @@ namespace WorkManagement.Controllers
             return Ok(await _ocUserService.GetListUser(ocid));
         }
         [HttpGet("{page}/{pageSize}/{ocid}")]
-        public async Task<ActionResult> GetUsers(int page, int pageSize,int ocid)
+        [HttpGet("{page}/{pageSize}/{ocid}/{text}")]
+        public async Task<ActionResult> GetUsers(int page, int pageSize,int ocid, string text)
         {
-            var lists = await _ocUserService.GetListUser(page, pageSize, ocid);
+            var lists = await _ocUserService.GetListUser(page, pageSize, ocid, text);
             Response.AddPagination(lists.CurrentPage, lists.PageSize, lists.TotalCount, lists.TotalPages);
 
             return Ok(lists);

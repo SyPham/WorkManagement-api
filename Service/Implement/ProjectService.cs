@@ -60,7 +60,7 @@ namespace Service.Implement
         {
             var listTasks = await _context.Tasks
                .Where(x => (x.Status == false && x.FinishedMainTask == false) || (x.Status == true && x.FinishedMainTask == false))
-               .Include(x => x.User)
+               //.Include(x => x.User)
                .OrderBy(x => x.Level).ToListAsync();
 
             var tasks = new List<TreeViewTask>();

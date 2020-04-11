@@ -8,3 +8,5 @@ F:\0.Document\wwroot\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.Assembly
 F:\0.Document\wwroot\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.AssemblyInfo.cs
 F:\0.Document\wwroot\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.dll
 F:\0.Document\wwroot\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.pdb
+F:\0.Document\wwroot\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.csproj.CoreCompileInputs.cache
+F:\0.Document\wwroot\WorkManagement\Data\obj\Release\netcoreapp3.1\Data.genruntimeconfig.cache

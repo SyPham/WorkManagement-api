@@ -9,3 +9,4 @@ F:\0.Document\wwroot\WorkManagement\Service\obj\Release\netcoreapp3.1\Service.As
 F:\0.Document\wwroot\WorkManagement\Service\obj\Release\netcoreapp3.1\Service.csproj.CopyComplete
 F:\0.Document\wwroot\WorkManagement\Service\obj\Release\netcoreapp3.1\Service.dll
 F:\0.Document\wwroot\WorkManagement\Service\obj\Release\netcoreapp3.1\Service.pdb
+F:\0.Document\wwroot\WorkManagement\Service\obj\Release\netcoreapp3.1\Service.csproj.CoreCompileInputs.cache

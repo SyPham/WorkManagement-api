@@ -43,6 +43,8 @@ namespace Data
             builder.Entity<Tag>().HasKey(ba => new { ba.TaskID, ba.UserID });
             builder.Entity<OCUser>().HasKey(ba => new { ba.UserID, ba.OCID });
 
+           
+
         }
     }
 }

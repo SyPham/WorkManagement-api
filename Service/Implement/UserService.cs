@@ -59,7 +59,7 @@ namespace Service.Implement
             try
             {
                 var item = await _context.Users.FindAsync(id);
-                item.ImageURL = imagePath;
+                item.ImageBase64 = Convert.FromBase64String(imagePath);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -191,6 +191,12 @@ namespace Service.Implement
                 }
             }
             this.disposed = true;
+        }
+
+        public async Task<List<string>> GetUsernames()
+        {
+            return await _context.Users.Where(x => x.Username != "admin").Select(x => x.Username).ToListAsync();
+
         }
     }
 }

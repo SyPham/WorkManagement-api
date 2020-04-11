@@ -18,6 +18,7 @@ namespace Data.ViewModel.Comment
         public int TaskID { get; set; }
         public string Content { get; set; }
         public int ParentID { get; set; }
+        public int Level { get; set; }
         public byte[] ImageBase64 { get; set; }
         public DateTime CreatedTime { get; set; }
         public bool Seen { get; set; }

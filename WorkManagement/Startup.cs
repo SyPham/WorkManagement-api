@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Diagnostics;
 using AutoMapper;
 using WorkManagement.Hub;
+using WorkManagement.Helpers;
 
 namespace WorkManagement
 {
@@ -39,6 +40,8 @@ namespace WorkManagement
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             var conn = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<DataContext>(x => x.UseSqlServer(conn));
@@ -56,7 +59,7 @@ namespace WorkManagement
                    ValidateIssuerSigningKey = true,
 
                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII
-                        .GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
+                        .GetBytes(appSettings.Token)),
                    ValidateIssuer = false,
                    ValidateAudience = false
                };
@@ -103,14 +106,7 @@ namespace WorkManagement
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
-                    builder => builder.WithOrigins("http://10.4.4.224:93", 
-                    "http://10.4.4.224:11113", 
-                    "http://10.4.4.224:100", 
-                    "http://10.4.4.224:11111", 
-                    "http://10.4.4.224:999", 
-                    "http://10.4.4.224:94", 
-                    "http://10.4.0.76:97", 
-                    "http://10.4.0.76:96") //register for client
+                    builder => builder.WithOrigins(appSettings.CorsPolicy) //register for client
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials());

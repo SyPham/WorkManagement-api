@@ -66,6 +66,16 @@ namespace WorkManagement.Controllers
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
             return Ok(await _taskService.GetListTree(sort, priority, userID, start, end, weekdays, monthly, quarterly));
         }
+        [HttpGet("beAssigned/{assigned}")]
+        [HttpGet("assigned/{assigned}")]
+        public async Task<IActionResult> SortBy(string assigned)
+        {
+            string token = Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            if (!assigned.IsNullOrEmpty() && assigned == "Assigned")
+                return Ok(await _taskService.GetListTree("", assigned, userID));
+            else return Ok(await _taskService.GetListTree(assigned, "", userID));
+        }
 
         [HttpGet]
         [HttpGet("{ocid}")]

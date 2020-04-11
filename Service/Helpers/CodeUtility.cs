@@ -353,7 +353,7 @@ namespace Service.Helpers
         {
             string result = value;
 
-            string symbols = @"/\?#$& ";
+            string symbols = @"/\#$ ";
             if (result.Contains("-"))
             {
                 result = result.Replace("-", "_");

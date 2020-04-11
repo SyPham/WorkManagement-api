@@ -165,3 +165,5 @@ F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Debug\netcoreapp3.1\Micro
 F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Debug\netcoreapp3.1\libman.json
 F:\0.Document\wwroot\WorkManagement\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.MvcApplicationPartsAssemblyInfo.cs
 F:\0.Document\wwroot\WorkManagement\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.MvcApplicationPartsAssemblyInfo.cache
+F:\0.Document\wwroot\WorkManagement\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.csproj.CoreCompileInputs.cache
+F:\0.Document\wwroot\WorkManagement\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.genruntimeconfig.cache

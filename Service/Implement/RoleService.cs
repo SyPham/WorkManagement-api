@@ -61,10 +61,13 @@ namespace Service.Implement
             return await _context.Roles.Where(x=>!x.Name.ToLower().Contains("admin")).ToListAsync();
         }
 
-        public async Task<PagedList<Role>> GetAllPaging( int page, int pageSize)
+        public async Task<PagedList<Role>> GetAllPaging( int page, int pageSize, string text)
         {
             var source = _context.Roles.Where(x => !x.Name.ToLower().Contains("admin")).AsQueryable();
-           
+           if (!text.IsNullOrEmpty())
+            {
+                source = source.Where(x => x.Name.ToLower().Contains(text.ToLower()));
+            }
             return await PagedList<Role>.CreateAsync(source, page, pageSize);
         }
 

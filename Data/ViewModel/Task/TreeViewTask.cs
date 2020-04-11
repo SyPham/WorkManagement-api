@@ -55,7 +55,7 @@ namespace Data.ViewModel.Task
         public string DueDateYearly { get; set; }
         public string SpecificDate { get; set; }
         public string CreatedDateForEachTask { get; set; }
-        
+        public string ModifyDateTime { get; set; }
         public bool HasChildren
         {
             get { return children.Any(); }

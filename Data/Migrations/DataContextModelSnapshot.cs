@@ -59,6 +59,9 @@ namespace Data.Migrations
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
                     b.Property<int>("ParentID")
                         .HasColumnType("int");
 
@@ -462,6 +465,9 @@ namespace Data.Migrations
 
                     b.Property<int>("Level")
                         .HasColumnType("int");
+
+                    b.Property<string>("ModifyDateTime")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OCID")
                         .HasColumnType("int");

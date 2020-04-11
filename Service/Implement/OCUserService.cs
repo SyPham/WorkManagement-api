@@ -118,7 +118,7 @@ namespace Service.Implement
             }
         }
 
-        public async Task<PagedList<Data.ViewModel.OCUser.User>> GetListUser(int page = 1, int pageSize = 10, int ocid = 0)
+        public async Task<PagedList<Data.ViewModel.OCUser.User>> GetListUser(int page = 1, int pageSize = 10, int ocid = 0, string text = "")
         {
             var source = await _context.Users.Select(x => new Data.ViewModel.OCUser.User
             {
@@ -128,6 +128,10 @@ namespace Service.Implement
                 RoleID = x.RoleID,
                 Status = _context.OCUsers.Any(a => a.UserID == x.ID && a.OCID == ocid && a.Status == true)
             }).ToListAsync();
+            if (!text.IsNullOrEmpty())
+            {
+                source = source.Where(x => x.Username.ToLower().Contains(text.ToLower())).ToList();
+            }
             return  PagedList<Data.ViewModel.OCUser.User>.Create(source, page, pageSize);
         }
         public async Task<object> GetListUser(int ocid)

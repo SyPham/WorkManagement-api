@@ -20,5 +20,6 @@ namespace Data.Models
         public bool Status { get; set; }
         public string Deadline { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string ModifyDateTime { get; set; }
     }
 }

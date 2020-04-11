@@ -46,6 +46,7 @@ namespace Data.Models
         public string DateOfWeekly { get; set; } = "";
         public string DateOfMonthly { get; set; } = "";
         public Enum.PeriodType periodType { get; set; }
+        public string ModifyDateTime { get; set; }
 
     }
 }

@@ -76,6 +76,7 @@ namespace Service.Implement
         {
             try
             {
+                comment.Level = 1;
                 await _context.AddAsync(comment);
                 await _context.SaveChangesAsync();
                 await _context.AddAsync(new CommentDetail { CommentID = comment.ID, UserID = comment.UserID, Seen = true });
@@ -112,12 +113,14 @@ namespace Service.Implement
         {
             try
             {
+                var item = _context.Comments.Find(subcomment.ParentID);
                 var comment = new Comment
                 {
                     ParentID = subcomment.ParentID,
                     TaskID = subcomment.TaskID,
                     UserID = subcomment.UserID,
-                    Content = subcomment.Content
+                    Content = subcomment.Content,
+                    Level = item.Level + 1
                 };
 
                 await _context.AddAsync(comment);
@@ -168,6 +171,7 @@ namespace Service.Implement
                     Username = _.user.Username,
                     ImageBase64 = _.user.ImageBase64,
                     Content = _.comt.Content,
+                    Level = _.comt.Level,
                     ParentID = _.comt.ParentID,
                     CreatedTime = _.comt.CreatedTime,
                     Seen = detail.FirstOrDefault(d => d.CommentID.Equals(_.comt.ID) && d.UserID.Equals(userID)) == null ? false : true
@@ -191,6 +195,7 @@ namespace Service.Implement
                     Content = _.comt.Content,
                     ParentID = _.comt.ParentID,
                     TaskID = _.comt.TaskID,
+                    Level = _.comt.Level,
                     CreatedTime = _.comt.CreatedTime,
                     Seen = detail.FirstOrDefault(d => d.CommentID.Equals(_.comt.ID) && d.UserID.Equals(userID)) == null ? false : true
                 })
@@ -210,6 +215,7 @@ namespace Service.Implement
                         ParentID = c.ParentID,
                         CreatedTime = c.CreatedTime,
                         Seen = c.Seen,
+                        Level = c.Level,
                         children = GetChildren(comments, c.ID)
                     })
                     .OrderByDescending(x => x.CreatedTime)
@@ -231,6 +237,7 @@ namespace Service.Implement
                                 Seen = c.Seen,
                                 CreatedTime = c.CreatedTime,
                                 TaskID = c.TaskID,
+                                Level = c.Level,
                                 children = GetChildren(listComments, c.ID)
                             })
                             .ToList();
@@ -273,6 +280,7 @@ namespace Service.Implement
                                 Seen = c.Seen,
                                 TaskID = c.TaskID,
                                 CreatedTime = c.CreatedTime,
+                                Level = c.Level,
                                 children = GetChildren(listComments, c.ID)
                             })
                             .ToList();

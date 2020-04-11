@@ -15,6 +15,7 @@ namespace Service.Interface
         Task<bool> Delete(int id);
         Task<User> GetByID(int id);
         Task<List<User>> GetAll();
+        Task<List<string>> GetUsernames();
         Task<bool> UploapProfile(int id, byte[] image);
         Task<object> GetListUser();
         Task<bool> ChangeAvatar(int userid, string imagePath);

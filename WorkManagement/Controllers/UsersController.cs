@@ -79,6 +79,11 @@ namespace WorkManagement.Controllers
             return Ok(await _userService.ChangeAvatar(userID, uniqueFileName));
         }
         [HttpPost]
+        public async Task<IActionResult> ChangedAvatar(UploadDto img)
+        {
+            return Ok(await _userService.ChangeAvatar(img.UserID, img.Imagebase64));
+        }
+        [HttpPost]
         public async Task<IActionResult> Update(User user )
         {
             return Ok(await _userService.Update(user));
@@ -128,6 +133,12 @@ namespace WorkManagement.Controllers
         {
             var model = await _userService.GetAllPaging(page, pageSize, keyword);
             Response.AddPagination(model.CurrentPage, model.PageSize, model.TotalCount, model.TotalPages);
+            return Ok(model);
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetUsernames()
+        {
+            var model = await _userService.GetUsernames();
             return Ok(model);
         }
     }

@@ -26,10 +26,11 @@ namespace WorkManagement.Controllers
         }
 
         // GET: api/Roles
+        [HttpGet("{page}/{pageSize}/{text}")]
         [HttpGet("{page}/{pageSize}")]
-        public async Task<ActionResult> GetAllPaging(int page, int pageSize)
+        public async Task<ActionResult> GetAllPaging(int page, int pageSize, string text)
         {
-            var model = await _roleService.GetAllPaging(page, pageSize);
+            var model = await _roleService.GetAllPaging(page, pageSize, text);
             return Ok( new  
             {
                 data = model,
@@ -39,9 +40,10 @@ namespace WorkManagement.Controllers
             }); 
         }
         [HttpGet("{page}/{pageSize}")]
-        public async Task<ActionResult> GetRoles(int page, int pageSize)
+        [HttpGet("{page}/{pageSize}/{text}")]
+        public async Task<ActionResult> GetRoles(int page, int pageSize, string text)
         {
-            var model = await _roleService.GetAllPaging(page, pageSize);
+            var model = await _roleService.GetAllPaging(page, pageSize, text);
             Response.AddPagination(model.CurrentPage, model.PageSize, model.TotalCount, model.TotalPages);
             return Ok(model);
         }
