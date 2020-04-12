@@ -151,8 +151,29 @@ namespace WorkManagement.Controllers
             string url = $"{Request.Headers["Origin"]}/#/follow/";
             var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
             var model = await _taskService.Done(id, userID);
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item3, "message");
-            return Ok(model.Item1);
+            if (model.Item1)
+            {
+                await _hubContext.Clients.All.SendAsync("ReceiveMessage", model.Item3, "message");
+                return Ok(new
+                {
+                    status = model.Item1,
+                    message = "The task was finished!!!"
+                });
+            } else if (!model.Item1)
+            {
+                return Ok(new {
+                    status = model.Item1,
+                    message = model.Item3
+                });
+            } else
+            {
+                return Ok(new
+                {
+                    status = model.Item1,
+                    message = "Server error!"
+                });
+            }
+
         }
         [HttpPost]
         public async Task<IActionResult> Remark([FromBody] RemarkViewModel remark)

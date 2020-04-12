@@ -12,6 +12,7 @@ namespace Data.Models
         public History()
         {
             CreatedDate = DateTime.Now;
+            this.ModifyDateTime = DateTime.Now.ToString("MMMM dd, yyyy HH:mm:ss tt");
         }
 
         public int ID { get; set; }

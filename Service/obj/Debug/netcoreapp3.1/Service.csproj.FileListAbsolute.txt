@@ -10,3 +10,15 @@ F:\0.Document\wwroot\WorkManagement\Service\obj\Debug\netcoreapp3.1\Service.cspr
 F:\0.Document\wwroot\WorkManagement\Service\obj\Debug\netcoreapp3.1\Service.dll
 F:\0.Document\wwroot\WorkManagement\Service\obj\Debug\netcoreapp3.1\Service.pdb
 F:\0.Document\wwroot\WorkManagement\Service\obj\Debug\netcoreapp3.1\Service.csproj.CoreCompileInputs.cache
+D:\wwwroot\WorkManagement\WorkManagement-api\Service\bin\Debug\netcoreapp3.1\Service.deps.json
+D:\wwwroot\WorkManagement\WorkManagement-api\Service\bin\Debug\netcoreapp3.1\Service.dll
+D:\wwwroot\WorkManagement\WorkManagement-api\Service\bin\Debug\netcoreapp3.1\Service.pdb
+D:\wwwroot\WorkManagement\WorkManagement-api\Service\bin\Debug\netcoreapp3.1\Data.dll
+D:\wwwroot\WorkManagement\WorkManagement-api\Service\bin\Debug\netcoreapp3.1\Data.pdb
+D:\wwwroot\WorkManagement\WorkManagement-api\Service\obj\Debug\netcoreapp3.1\Service.csprojAssemblyReference.cache
+D:\wwwroot\WorkManagement\WorkManagement-api\Service\obj\Debug\netcoreapp3.1\Service.csproj.CoreCompileInputs.cache
+D:\wwwroot\WorkManagement\WorkManagement-api\Service\obj\Debug\netcoreapp3.1\Service.AssemblyInfoInputs.cache
+D:\wwwroot\WorkManagement\WorkManagement-api\Service\obj\Debug\netcoreapp3.1\Service.AssemblyInfo.cs
+D:\wwwroot\WorkManagement\WorkManagement-api\Service\obj\Debug\netcoreapp3.1\Service.csproj.CopyComplete
+D:\wwwroot\WorkManagement\WorkManagement-api\Service\obj\Debug\netcoreapp3.1\Service.dll
+D:\wwwroot\WorkManagement\WorkManagement-api\Service\obj\Debug\netcoreapp3.1\Service.pdb

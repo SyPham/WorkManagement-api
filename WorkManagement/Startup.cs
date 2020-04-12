@@ -163,8 +163,6 @@ namespace WorkManagement
                 // app.UseHsts();
             }
 
-
-          
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("CorsPolicy");
