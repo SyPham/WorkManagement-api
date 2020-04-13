@@ -43,6 +43,7 @@ namespace Data.ViewModel.Task
         public BeAssigned FromWho { get; set; }
         public FromWhere FromWhere { get; set; }
         public string DateOfWeekly { get; set; }
+        public string DateOfMonthly { get; set; }
         public Models.Project Project { get; set; }
         public List<History.History> Histories { get; set; }
 
