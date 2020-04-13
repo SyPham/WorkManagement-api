@@ -336,3 +336,10 @@ D:\wwwroot\WorkManagement\WorkManagement-api\WorkManagement\obj\Debug\netcoreapp
 D:\wwwroot\WorkManagement\WorkManagement-api\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.dll
 D:\wwwroot\WorkManagement\WorkManagement-api\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.pdb
 D:\wwwroot\WorkManagement\WorkManagement-api\WorkManagement\obj\Debug\netcoreapp3.1\WorkManagement.genruntimeconfig.cache
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Debug\netcoreapp3.1\publish\web.config
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Debug\netcoreapp3.1\publish\appsettings.Development.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Debug\netcoreapp3.1\publish\appsettings.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Debug\netcoreapp3.1\publish\libman.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Debug\netcoreapp3.1\publish\WorkManagement.deps.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Debug\netcoreapp3.1\publish\WorkManagement.runtimeconfig.json
+F:\0.Document\wwroot\WorkManagement\WorkManagement\bin\Debug\netcoreapp3.1\publish\wwwroot\lib\@microsoft\signalr\package.json
